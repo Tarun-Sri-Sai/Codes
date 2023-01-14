@@ -5,18 +5,15 @@
 #include <stdlib.h>
 
 /**
- * Dynamic String library:
- * String grows and shrinks based on requirement.
- * Allocation and deallocation of the object are explicit.
- *
- * Uses pointer to structs of type 'string *' that contain
- * three items: val, length & capacity. capacity of 'string *'
- * object changes with change in length.
- *
- * Syntax for declaring a 'string *' object: string *str;
- *
- * If only library's functions are used for access and
- * modification, 'string *' objects are memory-safe.
+ * @brief   
+ * @brief   Dynamic String Library
+ * @details String grows and shrinks based on requirement.
+ *          Allocation and deallocation of the object are explicit.
+ *          Uses pointer to structs of type 'string *' that contain
+ *          three items: val, length & capacity. capacity of 'string *'
+ *          object changes with change in length.
+ *          If only library's functions are used for access and
+ *          modification, 'string *' objects are memory-safe.
  */
 typedef struct string_tag
 {
@@ -39,16 +36,12 @@ void nextend(string **source, string **extension, unsigned long max_size);
 unsigned long min(unsigned long a, unsigned long b);
 
 /**
- * Creates a new object of type 'string *' and appends
- * the char string val to the object's val item.
+ * @brief   String object initializer
+ * @details Creates a new object of type 'string *' and appends
+ *          the char string val to the object's val item.
  *
- * Parameters:
- * val:             Pointer to char of type 'char *'.
- *
- * Return value:    Pointer to struct of type 'string *'.
- *
- * Syntax:          init("Example1"); or
- *                  init(arg1);
+ * @param   val char * 
+ * @return  string *
  */
 string *init(char *val)
 {
@@ -58,9 +51,10 @@ string *init(char *val)
 }
 
 /**
- * Creates a new object of type 'string *'.
+ * @brief   String object constructor
+ * @details Creates a new object of type 'string *'.
  *
- * Return value:    Pointer to struct of type 'string *'.
+ * @return  string *
  */
 string *create()
 {
@@ -73,17 +67,14 @@ string *create()
 }
 
 /**
- * Appends char string of type 'char *' to the object pointed by
- * source's val item.
+ * @brief   
+ * @details Appends char string of type 'char *' to the object pointed by
+ *          source's val item.
+ *          Does nothing if object pointed by source is (string *)0.
  *
- * Does nothing if object pointed by source is (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- * appendix:        Pointer to char of type 'char *'.
- *
- * Syntax:          append(&arg1, "Example1"); or
- *                  append(&arg1, arg2);
+ * @param   source      string ** 
+ * @param   appendix    char * 
+ * @return  void
  */
 void append(string **source, char *appendix)
 {
@@ -106,18 +97,16 @@ void append(string **source, char *appendix)
 }
 
 /**
- * Appends object pointed by the val item of object pointed by extension
- * to the val item of object pointed by source. The object pointed by
- * extension remains unchanged.
+ * @brief   Appends one string object to another
+ * @details object pointed by the val item of object pointed by extension
+ *          to the val item of object pointed by source. The object pointed by
+ *          extension remains unchanged.
+ *          Does nothing if any one of source or extension point to
+ *          (string *)0.
  *
- * Does nothing if any one of source or extension point to
- * (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- * extension:       Pointer to pointer to struct of type 'string **'.
- *
- * Syntax:          extend(&arg1, &arg2);
+ * @param   source      string **
+ * @param   extension   string **
+ * @return  void
  */
 void extend(string **source, string **extension)
 {
@@ -140,16 +129,14 @@ void extend(string **source, string **extension)
 }
 
 /**
- * Frees the memory of object pointed by source as well as its
- * val item. Sets the object to (string *)0.
+ * @brief   String object Destructor
+ * @details Frees the memory of object pointed by source as well as its
+ *          val item. Sets the object to (string *)0.
+ *          Does nothing if the object pointed by source is
+ *          (string *)0.
  *
- * Does nothing if the object pointed by source is
- * (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- *
- * Syntax:          discard(&arg1);
+ * @param   source  string **
+ * @return  void
  */
 void discard(string **source)
 {
@@ -163,14 +150,12 @@ void discard(string **source)
 }
 
 /**
- * Prints the items in object pointed by source.
+ * @brief   Debugger Print a String object
+ * @details Prints the items in object pointed by source.
+ *          Does nothing if source is pointing to (string *)0).
  *
- * Does nothing if source is pointing to (string *)0).
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- *
- * Syntax:          debug_print(&arg1);
+ * @param   source  string ** 
+ * @return  void
  */
 void debug_print(string **source)
 {
@@ -182,17 +167,14 @@ void debug_print(string **source)
 }
 
 /**
- * Appends the character appendix to the val item of the object
- * pointed  by source.
+ * @brief   Adds a character to String object
+ * @details Appends the character appendix to the val item of the object
+ *          pointed  by source.
+ *          Does nothing if source is pointing to (string *)0).
  *
- * Does nothing if source is pointing to (string *)0).
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- * appendix:        Value of type 'char'.
- *
- * Syntax:          push_back(&arg1, 'A'); or
- *                  push_back(&arg1, arg2);
+ * @param   source      string **
+ * @param   appendix    char
+ * @return  void
  */
 void push_back(string **source, char appendix)
 {
@@ -214,17 +196,15 @@ void push_back(string **source, char appendix)
 }
 
 /**
- * Removes last character from object pointed by source.
- * Discards old object and creates a new object if only one
- * character is left in the val item of source.
+ * @brief   Delete character at end
+ * @details Removes last character from object pointed by source.
+ *          Discards old object and creates a new object if only one
+ *          character is left in the val item of source.
+ *          Does nothing if the object pointed by source is
+ *          (string *)0.
  *
- * Does nothing if the object pointed by source is
- * (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- *
- * Syntax:          pop_back(&arg1);
+ * @param   source  string **
+ * @return  void
  */
 void pop_back(string **source)
 {
@@ -248,16 +228,12 @@ void pop_back(string **source)
 }
 
 /**
- * Returns val item of object pointed by source.
+ * @brief   Return char pointer of String object
+ * @details Returns val item of object pointed by source.
+ *          Returns (char *)0 if source is pointing to (string *)0.
  *
- * Returns (char *)0 if source is pointing to (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- *
- * Return value:    Pointer to char of type 'const char *'.
- *
- * Syntax:          to_string(&arg1);
+ * @param   source  string **
+ * @return  const char *
  */
 const char *to_string(string **source)
 {
@@ -269,15 +245,12 @@ const char *to_string(string **source)
 }
 
 /**
- * Returns length item of object pointed by source. Returns 0 if
- * source is pointing to (string *)0.
+ * @brief   Returns length of String object
+ * @details length item of object pointed by source. Returns 0 if
+ *          source is pointing to (string *)0.
  *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- *
- * Return value:    Value of type 'int'.
- *
- * Syntax:          length(&arg1);
+ * @param   source  string **
+ * @return  unsigned long
  */
 unsigned long length(string **source)
 {
@@ -289,18 +262,15 @@ unsigned long length(string **source)
 }
 
 /**
- * Appends atmost max_size characters from char string of type
- * 'char *' to the val item of object pointed by source.
+ * @brief   Limited length version of append()
+ * @details Appends atmost max_size characters from char string of type
+ *          'char *' to the val item of object pointed by source.
+ *          Does nothing if source is pointing to (string *)0.
  *
- * Does nothing if source is pointing to (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- * appendix:        Pointer to char of type 'char *'.
- * max_size:        Value of type 'unsigned long'.
- *
- * Syntax:          nappend(&arg1, "Example1", 1); or
- *                  nappend(&arg1, arg2, arg3);
+ * @param   source      string **
+ * @param   appendix      char *
+ * @param   max_size      unsigned long
+ * @return  void
  */
 void nappend(string **source, char *appendix, unsigned long max_size)
 {
@@ -323,20 +293,17 @@ void nappend(string **source, char *appendix, unsigned long max_size)
 }
 
 /**
- * Appends the val item of object pointed by extension to the val
- * item of object pointed by source. The object extension remains
- * unchanged.
+ * @brief   Limited length version of extend()
+ * @details Appends the val item of object pointed by extension to the val
+ *          item of object pointed by source. The object extension remains
+ *          unchanged.
+ *          Does nothing if any one of source or extension is pointing to
+ *          (string *)0.
  *
- * Does nothing if any one of source or extension is pointing to
- * (string *)0.
- *
- * Parameters:
- * source:          Pointer to pointer to struct of type 'string **'.
- * extension:       Pointer to pointer to struct of type 'string **'.
- * max_size:        Value of type 'unsigned long'.
- *
- * Syntax:          nextend(&arg1, &arg2, 10); or
- *                  nextend(&arg1, &arg2, arg3);
+ * @param   source      string **
+ * @param   extension   string **
+ * @param   max_size    unsigned long
+ * @return  void
  */
 void nextend(string **source, string **extension, unsigned long max_size)
 {
@@ -359,16 +326,11 @@ void nextend(string **source, string **extension, unsigned long max_size)
 }
 
 /**
- * Returns minimum of a and b.
+ * @brief   Returns minimum of a and b.
  *
- * Parameters:
- * a:               Value of type 'unsigned long'.
- * b:               Value of type 'unsigned long'.
- *
- * Return value:    Value of type 'unsigned long'.
- *
- * Syntax:          min(1, 2); or
- *                  min(arg1, arg2);
+ * @param   a   unsigned long
+ * @param   b   unsigned long
+ * @return  unsigned long
  */
 unsigned long min(unsigned long a, unsigned long b)
 {
