@@ -1,0 +1,104 @@
+{
+	"Java Template for Console I/O": {
+		"scope": "java",
+		"prefix": "java-console-temp",
+		"body": [
+			"import java.io.*;",
+			"import java.util.*;\n",
+			"public class Main {",
+			"\tprivate static Scanner sc;",
+			"\tprivate static BufferedWriter bw;\n",
+			"\tpublic static void main(String[] args) throws IOException {",
+			"\t\tsc = new Scanner(System.in);",
+			"\t\tbw = new BufferedWriter(new OutputStreamWriter(System.out) );",
+			"\t\t$1",
+			"\t\tsc.close();",
+			"\t\tbw.flush();",
+			"\t}", 
+			"}",
+		],
+		"description": "Initialise code for Java console I/O"
+	},
+
+	"Java Template for File I/O": {
+		"scope": "java",
+		"prefix": "java-file-temp",
+		"body": [
+			"import java.io.*;",
+			"import java.util.*;\n",
+			"public class Main {",
+			"\tprivate static BufferedReader br;",
+			"\tprivate static BufferedWriter bw;\n",
+			"\tpublic static void main(String[] args) throws IOException {",
+			"\t\tbr = new BufferedReader(new FileReader(\"Text Files/Input.txt\") );",
+			"\t\tbw = new BufferedWriter(new FileWriter(\"Text Files/Output.txt\") );",
+			"\t\t$1",
+			"\t\tbr.close();",
+			"\t\tbw.close();",
+			"\t}", 
+			"}",
+		],
+		"description": "Initialise code for Java file I/O"
+	},
+
+	"C++ Template for Console I/O": {
+		"scope": "cpp",
+		"prefix": "cpp-console-temp",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;\n",
+			"int main(void) {",
+    		"\tios::sync_with_stdio(false);",
+			"\tcin.tie(NULL);",
+			"\t$1",
+    		"\treturn 0;",
+			"}"
+		],
+		"description": "Initialise code for C++ console I/O"
+	},
+
+	"C++ Template for File I/O": {
+		"scope": "cpp",
+		"prefix": "cpp-file-temp",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;\n",
+			"int main(void) {",
+			"\tifstream fin (\"Text Files/Input.txt\");",
+			"\tofstream fout (\"Text Files/Output.txt\");",
+			"\t$1",
+			"\tfin.close();",
+			"\tfout.close();",
+    		"\treturn 0;",
+			"}"
+		]
+	},
+
+	"C Template for Console I/O": {
+		"scope": "c",
+		"prefix": "c-console-temp",
+		"body": [
+			"#include <stdio.h>",
+			"#include <stdlib.h>",
+			"#include <time.h>",
+			"#include <string.h>",
+			"#include <math.h>\n",
+			"int main(void) {",
+			"\t$1",
+    		"\treturn 0;",
+			"}"
+		],
+		"description": "Initialise code for C console I/O"
+	},
+
+	"Python Template for Console I/O": {
+		"scope": "python",
+		"prefix": "py-console-temp",
+		"body": [
+			"def main():",
+			"\t$1\n",
+			"if __name__ == \"__main__\":",
+			"\tmain()"
+		]
+	}
+}
