@@ -79,7 +79,7 @@ void append(String **source, char *appendix)
     {
         return;
     }
-    int i, length = strlen(appendix);
+    int i, length = strnlen_s(appendix, _MAX_PATH);
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
@@ -109,8 +109,8 @@ void extend(String **source, String **extension)
     {
         return;
     }
-    int i;
-    for (i = 0; i < (*extension)->length; ++i)
+    int i, length = min((*extension)->length, _MAX_PATH);
+    for (i = 0; i < length; ++i)
     {
         char t = (*extension)->val[i];
         if ((float)(*source)->length / (*source)->capacity > 0.75)
@@ -269,7 +269,7 @@ void nappend(String **source, char *appendix, int max_size)
     {
         return;
     }
-    int i, length = min(strlen(appendix), max_size);
+    int i, length = min(strnlen_s(appendix, _MAX_PATH), max_size);
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
@@ -300,8 +300,8 @@ void nextend(String **source, String **extension, int max_size)
     {
         return;
     }
-    int i;
-    for (i = 0; i < min((*extension)->length, max_size); ++i)
+    int i, length = min((*extension)->length, max_size);
+    for (i = 0; i < length; ++i)
     {
         char t = (*extension)->val[i];
         if ((float)(*source)->length / (*source)->capacity > 0.75)
