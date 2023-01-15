@@ -4,6 +4,8 @@
 #include <String.h>
 #include <stdlib.h>
 
+#define MAX_STRING 0xFFFF
+
 /**
  * @brief   Dynamic String Object.
  * @details String grows and shrinks based on requirement. Allocation and 
@@ -79,7 +81,7 @@ void append(String **source, char *appendix)
     {
         return;
     }
-    int i, length = strnlen_s(appendix, _MAX_PATH);
+    int i, length = strnlen_s(appendix, MAX_STRING);
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
@@ -109,7 +111,7 @@ void extend(String **source, String **extension)
     {
         return;
     }
-    int i, length = min((*extension)->length, _MAX_PATH);
+    int i, length = (*extension)->length;
     for (i = 0; i < length; ++i)
     {
         char t = (*extension)->val[i];
@@ -269,7 +271,7 @@ void nappend(String **source, char *appendix, int max_size)
     {
         return;
     }
-    int i, length = min(strnlen_s(appendix, _MAX_PATH), max_size);
+    int i, length = min(strnlen_s(appendix, MAX_STRING), max_size);
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
