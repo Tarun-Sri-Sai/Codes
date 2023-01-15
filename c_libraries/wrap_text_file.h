@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_STRING 0xFFFF
+
 int wrap_text_file(FILE *input, int max_line_size, FILE *output);
 
 int wrap_text_file(FILE *input, int max_line_size, FILE *output)
@@ -18,7 +20,7 @@ int wrap_text_file(FILE *input, int max_line_size, FILE *output)
     while (fscanf(input, "%s", last_word) == 1)
     {
         ++word_count;
-        int curr_len = strlen(last_word);
+        int curr_len = strnlen_s(last_word, MAX_STRING);
         if (length + (curr_len + 1) > max_line_size)
         {
             fprintf(output, "\n");
