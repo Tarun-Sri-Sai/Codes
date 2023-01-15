@@ -12,13 +12,17 @@ public class AnimeHours {
         BufferedWriter bw = new BufferedWriter(new FileWriter("Text-Files/Output.txt"));
         String line = null;
         float sum = 0;
+        boolean print = false;
         while ((line = br.readLine()) != null) {
+            if (line.contains("Coming up:")) {
+                print = true;
+            }
             String[] words = line.split(" ");
             if (line.contains("Total watchtime:")) {
                 continue;
             }
             if (!line.contains("hrs")) {
-                for (int i = 0; i < words.length; i++) {
+                for (int i = 0; i < words.length; ++i) {
                     if (words[i].matches("\\d+") && i == words.length - 1) {
                         StringBuilder sb = new StringBuilder("(");
                         float val = Float.parseFloat(words[i]) / 3F;
@@ -28,8 +32,12 @@ public class AnimeHours {
                         words[i] = sb.toString();
                     }
                 }
+                if (!print) {
+                    bw.write(line + "\n");
+                    continue;
+                }
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < words.length; i++) {
+                for (int i = 0; i < words.length; ++i) {
                     sb.append(words[i]);
                     sb.append(" ");
                 }
