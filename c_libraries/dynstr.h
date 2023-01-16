@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include <String.h>
+#include <string.h>
 #include <stdlib.h>
 
 #define MAX_STRING 0xFFFF
@@ -81,7 +81,7 @@ void append(String **source, char *appendix)
     {
         return;
     }
-    int i, length = strnlen_s(appendix, MAX_STRING);
+    int i, length = strnlen(appendix, MAX_STRING);
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
@@ -271,7 +271,7 @@ void nappend(String **source, char *appendix, int max_size)
     {
         return;
     }
-    int i, length = min(strnlen_s(appendix, MAX_STRING), max_size);
+    int i, length = min(strnlen(appendix, MAX_STRING), max_size);
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
