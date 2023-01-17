@@ -6,10 +6,11 @@
 
 using namespace std;
 
-const int WIDTH = 40, HEIGHT = 20, ESC = 27, LOOP_TIMER = 100, MAX_SCORE = (WIDTH * HEIGHT) / 4;
+const int WIDTH = 40, HEIGHT = 20, ESC = 27, LOOP_TIMER = 75, MAX_SCORE = (WIDTH * HEIGHT) / 4;
 
-bool game_over = false;
+bool game_over;
 int head_x, head_y, fruit_x, fruit_y, score;
+int tail_x[MAX_SCORE + 1], tail_y[MAX_SCORE + 1];
 int next_direction[][2] = {
     {0, 0},  //  STOP
     {1, 0},  //  RIGHT
@@ -36,15 +37,18 @@ void setup();
 void draw();
 void input();
 void logic();
-int bounded_rand(int lb, int ub);
+int bounded_rand(int lower_bound, int upper_bound);
 void freeplay();
 void update_score();
 void update_directions();
-bool is_side_border(int j);
-bool is_head(int i, int j);
-bool is_fruit(int i, int j);
+bool is_side_border(int position_x);
+bool is_head(int position_y, int position_x);
+bool is_fruit(int position_y, int position_x);
 void generate_fruit();
-void take_directions();
+void get_direction_input();
+void update_tail();
+bool is_tail(int position_y, int position_x);
+void debug_print_tail();
 
 /**
  *
@@ -55,19 +59,18 @@ int main()
 {
     srand(time(NULL));
     setup();
-    draw();
     while (!game_over && score < MAX_SCORE)
     {
-        clock_t start_time = clock();
+        draw();
         input();
         logic();
-        draw();
-        clock_t time_taken = clock() - start_time;
-        if (time_taken < LOOP_TIMER)
+        if (direction == UP || direction == DOWN)
         {
-            Sleep(LOOP_TIMER - time_taken);
+            Sleep(LOOP_TIMER + (LOOP_TIMER / 2));
         }
+        Sleep(LOOP_TIMER);
     }
+    // debug_print_tail();
     if (score >= MAX_SCORE)
     {
         printf("\nDamn you really beat the Snake Game! :D\n");
@@ -92,70 +95,74 @@ void draw()
      * system("cls");
     */
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0,0}); 
-    for (int i = 0; i < HEIGHT + 2; ++i)
+    for (int position_y = 0; position_y < HEIGHT + 2; ++position_y)
     {
-        if (i == 0 || i == HEIGHT + 1)
+        if (position_y == 0 || position_y == HEIGHT + 1)
         {
-            for (int i = 0; i < WIDTH + 2; ++i)
+            for (int position_y = 0; position_y < WIDTH + 2; ++position_y)
             {
-                cout << '#';
+                putchar('#');
             }
-            cout << '\n';
+            putchar('\n');
             continue;
         }
-        for (int j = 0; j < WIDTH + 2; ++j)
+        for (int position_x = 0; position_x < WIDTH + 2; ++position_x)
         {
-            if (is_side_border(j))
+            if (is_side_border(position_x))
             {
-                cout << '#';
+                putchar('#');
             }
-            else if (is_head(i, j))
+            else if (is_head(position_y, position_x))
             {
-                cout << 'O';
+                putchar('O');
             }
-            else if (is_fruit(i, j))
+            else if (is_fruit(position_y, position_x))
             {
-                cout << '@';
+                putchar('@');
+            }
+            else if (is_tail(position_y, position_x))
+            {
+                putchar('o');
             }
             else
             {
-                cout << ' ';
+                putchar(' ');
             }
         }
-        cout << '\n';
+        putchar('\n');
     }
     cout << "Score: " << score << '\n';
 }
 
-bool is_fruit(int i, int j)
+bool is_fruit(int position_y, int position_x)
 {
-    return j == fruit_x && i == fruit_y;
+    return position_x == fruit_x && position_y == fruit_y;
 }
 
-bool is_head(int i, int j)
+bool is_head(int position_y, int position_x)
 {
-    return j == head_x && i == head_y;
+    return position_x == head_x && position_y == head_y;
 }
 
-bool is_side_border(int j)
+bool is_side_border(int position_x)
 {
-    return j == 0 || j == WIDTH + 1;
+    return position_x == 0 || position_x == WIDTH + 1;
 }
 
-int bounded_rand(int lb, int ub)
+int bounded_rand(int lower_bound, int upper_bound)
 {
-    return lb + rand() % (ub - lb + 1);
+    return lower_bound + rand() % (upper_bound - lower_bound + 1);
 }
 
 void input()
 {
     if (_kbhit())
     {
-        take_directions();
+        get_direction_input();
     }
 }
 
-void take_directions()
+void get_direction_input()
 {
     switch (getch())
     {
@@ -180,6 +187,11 @@ void take_directions()
 
 void logic()
 {
+    if (is_tail(head_y, head_x))
+    {
+        game_over = true;
+    }
+    update_tail();
     update_directions();
     freeplay();
     update_score();
@@ -212,7 +224,7 @@ void freeplay()
 
 void update_score()
 {
-    if (is_fruit(head_x, head_y))
+    if (is_fruit(head_y, head_x))
     {
         ++score;
         fruit_x = bounded_rand(1, WIDTH);
@@ -224,4 +236,42 @@ void generate_fruit()
 {
     fruit_x = bounded_rand(1, WIDTH);
     fruit_y = bounded_rand(1, HEIGHT);
+}
+
+void update_tail()
+{
+    int prev_x = tail_x[0];
+    int prev_y = tail_y[0];
+    int temp_x, temp_y;
+    tail_x[0] = head_x;
+    tail_y[0] = head_y;
+    for (int i = 1; i < score; ++i)
+    {
+        temp_x = tail_x[i];
+        temp_y = tail_y[i];
+        tail_x[i] = prev_x;
+        tail_y[i] = prev_y;
+        prev_x = temp_x;
+        prev_y = temp_y;
+    }
+}
+
+bool is_tail(int position_y, int position_x)
+{
+    for (int i = 0; i < score; ++i)
+    {
+        if (tail_x[i] == position_x && tail_y[i] == position_y)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void debug_print_tail()
+{
+    for (int i = 0; i < score; ++i)
+    {
+        cerr << '(' << tail_x[i] << ", " << tail_y[i] << ")\n";
+    }
 }
