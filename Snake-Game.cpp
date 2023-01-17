@@ -68,7 +68,10 @@ int main()
         {
             Sleep(LOOP_TIMER + (LOOP_TIMER / 2));
         }
-        Sleep(LOOP_TIMER);
+        else
+        {
+            Sleep(LOOP_TIMER);
+        }
     }
     // debug_print_tail();
     if (score >= MAX_SCORE)
