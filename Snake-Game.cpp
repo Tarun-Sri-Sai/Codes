@@ -64,14 +64,6 @@ int main()
         draw();
         input();
         logic();
-        if (direction == UP || direction == DOWN)
-        {
-            Sleep(LOOP_TIMER + (LOOP_TIMER / 2));
-        }
-        else
-        {
-            Sleep(LOOP_TIMER);
-        }
     }
     // debug_print_tail();
     if (score >= MAX_SCORE)
@@ -97,7 +89,7 @@ void draw()
      * Replacement for:
      * system("cls");
     */
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0,0}); 
+    printf("\x1b[d");
     for (int position_y = 0; position_y < HEIGHT + 2; ++position_y)
     {
         if (position_y == 0 || position_y == HEIGHT + 1)
@@ -159,10 +151,14 @@ int bounded_rand(int lower_bound, int upper_bound)
 
 void input()
 {
-    if (_kbhit())
-    {
-        get_direction_input();
-    }
+    const int LIMIT = (direction == UP || direction == DOWN ? LOOP_TIMER * 100 : LOOP_TIMER * 50);
+    int i = 0;
+    do {
+        if (_kbhit())
+        {
+            get_direction_input();
+        }
+    } while (++i < LIMIT);
 }
 
 void get_direction_input()
