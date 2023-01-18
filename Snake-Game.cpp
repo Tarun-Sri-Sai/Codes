@@ -2,15 +2,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <conio.h>
+#include <windows.h> //  Remove for MacOS
 
 using namespace std;
 
-const int WIDTH = 40, HEIGHT = 20, ESC = 27, LOOP_TIMER = 75, MAX_SCORE = (WIDTH * HEIGHT) / 4;
+const int32_t WIDTH = 40, HEIGHT = 20, ESC = 27, FRAME_TIMER = 50, MAX_SCORE = (WIDTH * HEIGHT) / 4;
 
 bool game_over;
-int head_x, head_y, fruit_x, fruit_y, score;
-int tail_x[MAX_SCORE + 1], tail_y[MAX_SCORE + 1];
-int next_direction[][2] = {
+int32_t head_x, head_y, fruit_x, fruit_y, score;
+int32_t tail_x[MAX_SCORE + 1], tail_y[MAX_SCORE + 1];
+int32_t next_direction[][2] = {
     {0, 0},  //  STOP
     {1, 0},  //  RIGHT
     {0, -1}, //  UP
@@ -27,7 +28,8 @@ enum e_direction
     DOWN
 } direction;
 
-enum e_mode {
+enum e_mode
+{
     FREEPLAY = 0,
     CAMPAIGN
 } mode;
@@ -36,25 +38,26 @@ void setup();
 void draw();
 void input();
 void logic();
-int bounded_rand(int lower_bound, int upper_bound);
+int32_t bounded_rand(int32_t lower_bound, int32_t upper_bound);
 void freeplay();
 void update_score();
 void update_directions();
-bool is_side_border(int position_x);
-bool is_head(int position_y, int position_x);
-bool is_fruit(int position_y, int position_x);
+bool is_side_border(int32_t position_x);
+bool is_head(int32_t position_y, int32_t position_x);
+bool is_fruit(int32_t position_y, int32_t position_x);
 void generate_fruit();
 void get_direction_input();
 void update_tail();
-bool is_tail(int position_y, int position_x);
+bool is_tail(int32_t position_y, int32_t position_x);
 void debug_print_tail();
+void restrict_frame_rate();
 
 /**
  *
  * DRIVER FUNCTION
  *
  */
-int main()
+int32_t main()
 {
     srand(time(NULL));
     setup();
@@ -63,6 +66,7 @@ int main()
         draw();
         input();
         logic();
+        restrict_frame_rate();
     }
     // debug_print_tail();
     if (score >= MAX_SCORE)
@@ -87,20 +91,20 @@ void draw()
     /**
      * Replacement for:
      * system("cls");
-    */
+     */
     printf("\x1b[d");
-    for (int position_y = 0; position_y < HEIGHT + 2; ++position_y)
+    for (int32_t position_y = 0; position_y < HEIGHT + 2; ++position_y)
     {
         if (position_y == 0 || position_y == HEIGHT + 1)
         {
-            for (int position_y = 0; position_y < WIDTH + 2; ++position_y)
+            for (int32_t position_y = 0; position_y < WIDTH + 2; ++position_y)
             {
                 putchar('#');
             }
             putchar('\n');
             continue;
         }
-        for (int position_x = 0; position_x < WIDTH + 2; ++position_x)
+        for (int32_t position_x = 0; position_x < WIDTH + 2; ++position_x)
         {
             if (is_side_border(position_x))
             {
@@ -128,37 +132,32 @@ void draw()
     cout << "Score: " << score << '\n';
 }
 
-bool is_fruit(int position_y, int position_x)
+bool is_fruit(int32_t position_y, int32_t position_x)
 {
     return position_x == fruit_x && position_y == fruit_y;
 }
 
-bool is_head(int position_y, int position_x)
+bool is_head(int32_t position_y, int32_t position_x)
 {
     return position_x == head_x && position_y == head_y;
 }
 
-bool is_side_border(int position_x)
+bool is_side_border(int32_t position_x)
 {
     return position_x == 0 || position_x == WIDTH + 1;
 }
 
-int bounded_rand(int lower_bound, int upper_bound)
+int32_t bounded_rand(int32_t lower_bound, int32_t upper_bound)
 {
     return lower_bound + rand() % (upper_bound - lower_bound + 1);
 }
 
 void input()
 {
-    const int LIMIT = (direction == UP || direction == DOWN ? LOOP_TIMER * 100 : LOOP_TIMER * 50);
-    int i = 0;
-    do {
-        if (_kbhit())
-        {
-            get_direction_input();
-            break;
-        }
-    } while (++i < LIMIT);
+    if (_kbhit())
+    {
+        get_direction_input();
+    }
 }
 
 void get_direction_input()
@@ -196,7 +195,8 @@ void logic()
     update_score();
 }
 
-void update_directions() {
+void update_directions()
+{
     head_x += next_direction[direction][0];
     head_y += next_direction[direction][1];
 }
@@ -239,12 +239,12 @@ void generate_fruit()
 
 void update_tail()
 {
-    int prev_x = tail_x[0];
-    int prev_y = tail_y[0];
-    int temp_x, temp_y;
+    int32_t prev_x = tail_x[0];
+    int32_t prev_y = tail_y[0];
+    int32_t temp_x, temp_y;
     tail_x[0] = head_x;
     tail_y[0] = head_y;
-    for (int i = 1; i < score; ++i)
+    for (int32_t i = 1; i < score; ++i)
     {
         temp_x = tail_x[i];
         temp_y = tail_y[i];
@@ -255,9 +255,9 @@ void update_tail()
     }
 }
 
-bool is_tail(int position_y, int position_x)
+bool is_tail(int32_t position_y, int32_t position_x)
 {
-    for (int i = 0; i < score; ++i)
+    for (int32_t i = 0; i < score; ++i)
     {
         if (tail_x[i] == position_x && tail_y[i] == position_y)
         {
@@ -269,8 +269,14 @@ bool is_tail(int position_y, int position_x)
 
 void debug_print_tail()
 {
-    for (int i = 0; i < score; ++i)
+    for (int32_t i = 0; i < score; ++i)
     {
         cerr << '(' << tail_x[i] << ", " << tail_y[i] << ")\n";
     }
+}
+
+void restrict_frame_rate()
+{
+    int32_t sleep_time = (direction == UP || direction == DOWN ? FRAME_TIMER * 2 : FRAME_TIMER);
+    Sleep(sleep_time); //  For MacOS: usleep(sleep_time);
 }
