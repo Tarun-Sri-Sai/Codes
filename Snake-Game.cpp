@@ -154,10 +154,15 @@ int32_t bounded_rand(int32_t lower_bound, int32_t upper_bound)
 
 void input()
 {
-    if (_kbhit())
-    {
-        get_direction_input();
-    }
+    const int LIMIT = (direction == UP || direction == DOWN ? FRAME_TIMER * 2 : FRAME_TIMER);
+    int i = 0;
+    do {
+        if (_kbhit())
+        {
+            get_direction_input();
+            break;
+        }
+    } while (++i < LIMIT);
 }
 
 void get_direction_input()
@@ -277,6 +282,5 @@ void debug_print_tail()
 
 void restrict_frame_rate()
 {
-    int32_t sleep_time = (direction == UP || direction == DOWN ? FRAME_TIMER * 2 : FRAME_TIMER);
-    Sleep(sleep_time); //  For MacOS: usleep(sleep_time);
+    Sleep(FRAME_TIMER); //  For MacOS: usleep(sleep_time);
 }
