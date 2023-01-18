@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int32_t WIDTH = 40, HEIGHT = 20, ESC = 27, FRAME_TIMER = 50, MAX_SCORE = (WIDTH * HEIGHT) / 4;
+const int32_t WIDTH = 40, HEIGHT = 20, ESC = 27, FRAME_TIMER = 40, MAX_SCORE = (WIDTH * HEIGHT) / 4;
 
 bool game_over;
 int32_t head_x, head_y, fruit_x, fruit_y, score;
@@ -282,5 +282,6 @@ void debug_print_tail()
 
 void restrict_frame_rate()
 {
-    Sleep(FRAME_TIMER); //  For MacOS: usleep(sleep_time);
+    const int TIMER = (direction == UP || direction == DOWN ? FRAME_TIMER * 2 : FRAME_TIMER);
+    Sleep(TIMER); //  For MacOS: usleep(TIMER);
 }
