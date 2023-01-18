@@ -157,6 +157,7 @@ void input()
         if (_kbhit())
         {
             get_direction_input();
+            break;
         }
     } while (++i < LIMIT);
 }
