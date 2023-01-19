@@ -153,7 +153,6 @@ int32_t bounded_rand(int32_t lower_bound, int32_t upper_bound)
 
 void input()
 {
-
     if (_kbhit())
     {
         get_direction_input();
