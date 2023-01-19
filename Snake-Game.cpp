@@ -6,7 +6,10 @@
 
 using namespace std;
 
-const int32_t WIDTH = 40, HEIGHT = 20, ESC = 27, FRAME_TIMER = 40, MAX_SCORE = (WIDTH * HEIGHT) / 4;
+const int32_t WIDTH = 40, HEIGHT = 20;
+const int32_t ESC = 27;
+const int32_t FPS = 15, FRAME_TIME = 1000 / (FPS > 0 ? FPS : 15);
+const int32_t MAX_SCORE = (WIDTH * HEIGHT) / 4;
 
 bool game_over;
 int32_t head_x, head_y, fruit_x, fruit_y, score;
@@ -28,12 +31,6 @@ enum e_direction
     DOWN
 } direction;
 
-enum e_mode
-{
-    FREEPLAY = 0,
-    CAMPAIGN
-} mode;
-
 void setup();
 void draw();
 void input();
@@ -50,7 +47,7 @@ void get_direction_input();
 void update_tail();
 bool is_tail(int32_t position_y, int32_t position_x);
 void debug_print_tail();
-void restrict_frame_rate();
+void next_frame(clock_t start_time);
 
 /**
  *
@@ -61,12 +58,14 @@ int32_t main()
 {
     srand(time(NULL));
     setup();
+    clock_t start_time;
     while (!game_over && score < MAX_SCORE)
     {
+        start_time = clock();
         draw();
         input();
         logic();
-        restrict_frame_rate();
+        next_frame(start_time);
     }
     // debug_print_tail();
     if (score >= MAX_SCORE)
@@ -154,15 +153,11 @@ int32_t bounded_rand(int32_t lower_bound, int32_t upper_bound)
 
 void input()
 {
-    const int LIMIT = (direction == UP || direction == DOWN ? FRAME_TIMER * 2 : FRAME_TIMER);
-    int i = 0;
-    do {
-        if (_kbhit())
-        {
-            get_direction_input();
-            break;
-        }
-    } while (++i < LIMIT);
+
+    if (_kbhit())
+    {
+        get_direction_input();
+    }
 }
 
 void get_direction_input()
@@ -280,8 +275,13 @@ void debug_print_tail()
     }
 }
 
-void restrict_frame_rate()
+void next_frame(clock_t start_time)
 {
-    const int TIMER = (direction == UP || direction == DOWN ? FRAME_TIMER * 2 : FRAME_TIMER);
-    Sleep(TIMER); //  For MacOS: usleep(TIMER);
+    const int32_t TIME = (direction == UP || direction == DOWN ? (int32_t)(FRAME_TIME * 2) : FRAME_TIME);
+    clock_t total_time = clock() - start_time;
+    if (total_time < TIME)
+    {
+        Sleep(TIME - total_time);   
+        //  usleep(TIME - total_time);  for MacOS
+    }
 }
