@@ -8,8 +8,9 @@ import java.io.IOException;
 
 public class AnimeHours {
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("../Text-Files/Input.txt"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("../Text-Files/Output.txt"));
+        final String inputPath = "../Text-Files/Input.txt", outputPath = "../Text-Files/Output.txt";
+        BufferedReader br = new BufferedReader(new FileReader(inputPath));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath));
         String line = null;
         float sum = 0;
         boolean print = false;
@@ -48,6 +49,7 @@ public class AnimeHours {
             }
         }
         bw.write(String.format("Total watchtime: %.2f hrs", sum));
+        System.err.println("Finished writing to " + outputPath);
         br.close();
         bw.close();
     }
