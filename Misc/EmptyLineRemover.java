@@ -6,10 +6,8 @@ import java.io.IOException;
 
 public class EmptyLineRemover {
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(
-                new FileReader("Text-Files/Input.txt"));
-        BufferedWriter bw = new BufferedWriter(
-                new FileWriter("Text-Files/Output.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("../Text-Files/Input.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("../Text-Files/Output.txt"));
         String line = br.readLine();
         int count = 0;
         final int LIM = (int) 1e5;

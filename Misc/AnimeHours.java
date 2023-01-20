@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public class AnimeHours {
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("Text-Files/Input.txt"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("Text-Files/Output.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("../Text-Files/Input.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("../Text-Files/Output.txt"));
         String line = null;
         float sum = 0;
         boolean print = false;
