@@ -46,7 +46,6 @@ void generate_fruit();
 void get_direction_input();
 void update_tail();
 bool is_tail(int32_t position_y, int32_t position_x);
-void debug_print_tail();
 void next_frame(clock_t start_time);
 
 /**
@@ -58,16 +57,14 @@ int32_t main()
 {
     srand(time(NULL));
     setup();
-    clock_t start_time;
     while (!game_over && score < MAX_SCORE)
     {
-        start_time = clock();
+        clock_t start_time = clock();
         draw();
         input();
         logic();
         next_frame(start_time);
     }
-    // debug_print_tail();
     if (score >= MAX_SCORE)
     {
         printf("\nDamn you really beat the Snake Game! :D\n");
@@ -87,10 +84,6 @@ void setup()
 
 void draw()
 {
-    /**
-     * Replacement for:
-     * system("cls");
-     */
     printf("\x1b[d");
     for (int32_t position_y = 0; position_y < HEIGHT + 2; ++position_y)
     {
@@ -232,21 +225,22 @@ void update_score()
 
 void generate_fruit()
 {
-    fruit_x = bounded_rand(1, WIDTH);
-    fruit_y = bounded_rand(1, HEIGHT);
+    do {
+        fruit_x = bounded_rand(1, WIDTH);
+        fruit_y = bounded_rand(1, HEIGHT);
+    } while (is_head(fruit_y, fruit_x) || is_tail(fruit_y, fruit_x));
 }
 
 void update_tail()
 {
     int32_t prev_x = tail_x[0];
     int32_t prev_y = tail_y[0];
-    int32_t temp_x, temp_y;
     tail_x[0] = head_x;
     tail_y[0] = head_y;
     for (int32_t i = 1; i < score; ++i)
     {
-        temp_x = tail_x[i];
-        temp_y = tail_y[i];
+        int32_t temp_x = tail_x[i];
+        int32_t temp_y = tail_y[i];
         tail_x[i] = prev_x;
         tail_y[i] = prev_y;
         prev_x = temp_x;
@@ -266,21 +260,12 @@ bool is_tail(int32_t position_y, int32_t position_x)
     return false;
 }
 
-void debug_print_tail()
-{
-    for (int32_t i = 0; i < score; ++i)
-    {
-        cerr << '(' << tail_x[i] << ", " << tail_y[i] << ")\n";
-    }
-}
-
 void next_frame(clock_t start_time)
 {
-    const int32_t TIME = (direction == UP || direction == DOWN ? (int32_t)(FRAME_TIME * 2) : FRAME_TIME);
-    clock_t total_time = clock() - start_time;
-    if (total_time < TIME)
+    const int32_t CYCLE_TIME_LIMIT = (direction == UP || direction == DOWN ? (int32_t)(FRAME_TIME * 2) : FRAME_TIME);
+    clock_t cycle_time = clock() - start_time;
+    if (cycle_time < CYCLE_TIME_LIMIT)
     {
-        Sleep(TIME - total_time);   
-        //  usleep(TIME - total_time);  for MacOS
+        Sleep(CYCLE_TIME_LIMIT - cycle_time);   //  usleep(CYCLE_TIME_LIMIT - cycle_time);  for MacOS
     }
 }
