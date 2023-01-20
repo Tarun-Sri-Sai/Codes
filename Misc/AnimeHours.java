@@ -5,16 +5,19 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class AnimeHours {
+    private static BufferedReader stdIn;
     public static void main(String[] args) throws IOException {
-        final String inputPath = "../Text-Files/Input.txt", outputPath = "../Text-Files/Output.txt";
-        BufferedReader br = new BufferedReader(new FileReader(inputPath));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath));
+        stdIn = new BufferedReader(new InputStreamReader(System.in));
+        final String inputPath = stdIn.readLine(), outputPath = stdIn.readLine();
+        BufferedReader fileIn = new BufferedReader(new FileReader(inputPath));
+        BufferedWriter fileOut = new BufferedWriter(new FileWriter(outputPath));
         String line = null;
         float sum = 0;
         boolean print = false;
-        while ((line = br.readLine()) != null) {
+        while ((line = fileIn.readLine()) != null) {
             if (line.contains("Coming up:")) {
                 print = true;
             }
@@ -28,13 +31,14 @@ public class AnimeHours {
                         StringBuilder sb = new StringBuilder("(");
                         float val = Float.parseFloat(words[i]) / 3F;
                         sum += val;
+                        System.err.println("Added value: " + val + " for " + line);
                         sb.append(String.format("%.2f", val));
                         sb.append(" hrs)");
                         words[i] = sb.toString();
                     }
                 }
                 if (!print) {
-                    bw.write(line + "\n");
+                    fileOut.write(line + "\n");
                     continue;
                 }
                 StringBuilder sb = new StringBuilder();
@@ -42,15 +46,17 @@ public class AnimeHours {
                     sb.append(words[i]);
                     sb.append(" ");
                 }
-                bw.write(sb.toString() + "\n");
+                fileOut.write(sb.toString() + "\n");
             } else {
-                sum += Float.parseFloat(words[words.length - 2].substring(1));
-                bw.write(line + "\n");
+                float val = Float.parseFloat(words[words.length - 2].substring(1));
+                sum += val;
+                System.err.println("Added value: " + val + " for " + line);
+                fileOut.write(line + "\n");
             }
         }
-        bw.write(String.format("Total watchtime: %.2f hrs", sum));
+        fileOut.write(String.format("Total watchtime: %.2f hrs", sum));
         System.err.println("Finished writing to " + outputPath);
-        br.close();
-        bw.close();
+        fileIn.close();
+        fileOut.close();
     }
 }
