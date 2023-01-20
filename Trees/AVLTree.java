@@ -1,60 +1,20 @@
+
 //  AVL Tree Implementation - Java
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AVLTree {
-    static BufferedReader br;
-    static BufferedWriter bw;
-
-    public static void main(String[] args) throws IOException {
-        br = new BufferedReader(new InputStreamReader(System.in) );
-        bw = new BufferedWriter(new OutputStreamWriter(System.out) );
-        String line;
-        Tree tree = new Tree();
-        bw.write("Tree operations on numbers (-99 to 999):\n");
-        bw.write("Tree insert: \"INSERT 30\"\n");
-        bw.write("Tree delete: \"DELETE 30\"\n");
-        bw.write("Tree search: \"SEARCH 30\"\n");
-        bw.write("Exit program: \"EXIT\"\n\n");
-        bw.flush();
-        while ( (line = br.readLine() ) != null) {
-            String[] words = line.split(" ");
-            int data;
-            switch (words[0].toUpperCase() ) {
-                case "INSERT":
-                    data = Integer.parseInt(words[1]);
-                    if (data > -100 && data < 1000) {
-                        tree.insert(data);
-                    }
-                    bw.write(tree + "\n\n");
-                    break;
-                case "DELETE":
-                    data = Integer.parseInt(words[1]);
-                    tree.delete(data);
-                    bw.write(tree + "\n\n");
-                    break;
-                case "SEARCH":
-                    data = Integer.parseInt(words[1]);
-                    bw.write(data + " " + (tree.search(data) ? "found" : "not found") + "\n\n");
-                    break;
-                case "EXIT":
-                default:
-                    bw.write("Program exited\n");
-                    bw.flush();
-                    return;
-            }
-            bw.flush();
-        }
-    }
-}
-
-class Tree {
     private TreeNode root;
 
     private static final int MAX_HEIGHT = 15;
     private static int[] startSpacing = null, middleSpacing = null;
 
-    Tree() {
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    AVLTree() {
         root = null;
     }
 
@@ -63,36 +23,36 @@ class Tree {
     }
 
     private static TreeNode delete(TreeNode root, int data) {
-        if (root == null) {                                                 //  empty tree
+        if (root == null) { // empty tree
             return root;
         }
-        if (data < root.data) {                                             //  target on left side of tree
+        if (data < root.data) { // target on left side of tree
             root.left = delete(root.left, data);
-        } else if (data > root.data) {                                      //  target on right side of tree
+        } else if (data > root.data) { // target on right side of tree
             root.right = delete(root.right, data);
-        } else if (root.left == null || root.right == null) {               //  root is target, but less than two children
+        } else if (root.left == null || root.right == null) { // root is target, but less than two children
             root = root.left != null ? root.left : root.right;
-        } else {                                                            //  root is target, but two children
+        } else { // root is target, but two children
             root.data = getMax(root.left);
             root.left = delete(root.left, root.data);
         }
         if (root == null) {
             return root;
         }
-        root.height = Math.max(height(root.left), height(root.right) ) + 1; //  update height for balanceFactor purpose
+        root.height = Math.max(height(root.left), height(root.right)) + 1; // update height for balanceFactor purpose
         int rootBalanceFactor = getBalanceFactor(root);
-        if (rootBalanceFactor > 1) {                                        //  if left subtree is unbalanced
+        if (rootBalanceFactor > 1) { // if left subtree is unbalanced
             int leftBalanceFactor = getBalanceFactor(root.left);
-            if (leftBalanceFactor < 0) {                                    //  for LR rotation
+            if (leftBalanceFactor < 0) { // for LR rotation
                 root.left = leftRotate(root.left);
             }
             root = rightRotate(root);
             return root;
         }
-        if (rootBalanceFactor < -1) {                                       //  if right subtree is unbalanced
+        if (rootBalanceFactor < -1) { // if right subtree is unbalanced
             int rightBalanceFactor = getBalanceFactor(root.right);
-            if (rightBalanceFactor > 0) {                                   
-                root.right = rightRotate(root.right);                       //  for RL rotation
+            if (rightBalanceFactor > 0) {
+                root.right = rightRotate(root.right); // for RL rotation
             }
             root = leftRotate(root);
             return root;
@@ -136,35 +96,35 @@ class Tree {
     }
 
     private static TreeNode insert(TreeNode root, int data) {
-        if (root == null) {                                                 //  create new node at target location
+        if (root == null) { // create new node at target location
             return new TreeNode(data);
         }
-        if (data < root.data) {                                             //  target in left subtree
+        if (data < root.data) { // target in left subtree
             root.left = insert(root.left, data);
-        } else if (data > root.data) {                                      //  target in right subtree
-            root.right = insert(root.right, data);     
-        } else {                                                            //  target already exists
+        } else if (data > root.data) { // target in right subtree
+            root.right = insert(root.right, data);
+        } else { // target already exists
             return root;
         }
-        root.height = Math.max(height(root.left), height(root.right) ) + 1; //  update height for balanceFactor purpose
+        root.height = Math.max(height(root.left), height(root.right)) + 1; // update height for balanceFactor purpose
         int rootBalanceFactor = getBalanceFactor(root);
-        if (rootBalanceFactor > 1) {                                        //  if left subtree is unbalanced
-            if (data > root.left.data) {                                    //  LR case
+        if (rootBalanceFactor > 1) { // if left subtree is unbalanced
+            if (data > root.left.data) { // LR case
                 root.left = leftRotate(root.left);
             }
-            root = rightRotate(root);                                       //  right rotation necessary in both cases
+            root = rightRotate(root); // right rotation necessary in both cases
             return root;
         }
-        if (rootBalanceFactor < -1) {                                       //  if right subtree is unbalanced
-            if (data < root.right.data) {                                   //  RL case
+        if (rootBalanceFactor < -1) { // if right subtree is unbalanced
+            if (data < root.right.data) { // RL case
                 root.right = rightRotate(root.right);
             }
-            root = leftRotate(root);                                        //  left rotation necessary in both cases
+            root = leftRotate(root); // left rotation necessary in both cases
             return root;
         }
         return root;
     }
-    
+
     private static int getBalanceFactor(TreeNode root) {
         if (root == null) {
             return 0;
@@ -190,8 +150,8 @@ class Tree {
         TreeNode rightChild = root.right;
         root.right = rightChild.left;
         rightChild.left = root;
-        root.height = Math.max(height(root.left), height(root.right) ) + 1;
-        rightChild.height = Math.max(height(rightChild.left), height(rightChild.right) ) + 1;
+        root.height = Math.max(height(root.left), height(root.right)) + 1;
+        rightChild.height = Math.max(height(rightChild.left), height(rightChild.right)) + 1;
         return rightChild;
     }
 
@@ -205,8 +165,8 @@ class Tree {
         TreeNode leftChild = root.left;
         root.left = leftChild.right;
         leftChild.right = root;
-        root.height = Math.max(height(root.left), height(root.right) ) + 1;
-        leftChild.height = Math.max(height(leftChild.left), height(leftChild.right) ) + 1;
+        root.height = Math.max(height(root.left), height(root.right)) + 1;
+        leftChild.height = Math.max(height(leftChild.left), height(leftChild.right)) + 1;
         return leftChild;
     }
 
@@ -216,13 +176,13 @@ class Tree {
         if (startSpacing == null || middleSpacing == null) {
             init();
         }
-        List<List<TreeNode> > levelList = getLevelOrder(root);
+        List<List<TreeNode>> levelList = getLevelOrder(root);
         int maxDepth = levelList.size() - 1;
         for (int i = 0; i <= maxDepth; i++) {
             List<TreeNode> nodeList = levelList.get(i);
             int currentHeight = maxDepth - i;
-            result.append(new String(new char[startSpacing[currentHeight] ]).replace("\0", " ") );
-            String middleSpace = new String(new char[middleSpacing[currentHeight] ]).replace("\0", " ");
+            result.append(new String(new char[startSpacing[currentHeight]]).replace("\0", " "));
+            String middleSpace = new String(new char[middleSpacing[currentHeight]]).replace("\0", " ");
             for (int size = nodeList.size(), j = 0; j < size; j++) {
                 String dataString = nodeList.get(j) == null ? "   " : String.format("%3d", nodeList.get(j).data);
                 result.append(dataString);
@@ -230,7 +190,7 @@ class Tree {
                     result.append(middleSpace);
                 }
             }
-            result.append(new String(new char[currentHeight]).replace("\0", "\n") );
+            result.append(new String(new char[currentHeight]).replace("\0", "\n"));
         }
         String resultString = result.toString();
         return resultString;
@@ -245,22 +205,22 @@ class Tree {
         middleSpacing = new int[MAX_HEIGHT];
         middleSpacing[0] = 1;
         for (int i = 1; i < 10; i++) {
-            middleSpacing[i] = middleSpacing[i - 1] + (1 << (i + 1) );
+            middleSpacing[i] = middleSpacing[i - 1] + (1 << (i + 1));
         }
     }
 
-    private static List<List<TreeNode> > getLevelOrder(TreeNode root) {
+    private static List<List<TreeNode>> getLevelOrder(TreeNode root) {
         List<List<TreeNode>> result = new ArrayList<>();
-        result.add(new ArrayList<>(Arrays.asList(root) ) );
+        result.add(new ArrayList<>(Arrays.asList(root)));
         int currentDepth = 0;
-        while (currentDepth < result.size() ) {
+        while (currentDepth < result.size()) {
             List<TreeNode> currentList = result.get(currentDepth++);
             List<TreeNode> nextList = new ArrayList<>();
             for (TreeNode currentNode : currentList) {
                 nextList.add(currentNode != null ? currentNode.left : null);
                 nextList.add(currentNode != null ? currentNode.right : null);
             }
-            if (notAllNull(nextList) )
+            if (notAllNull(nextList))
                 result.add(nextList);
         }
         return result;
@@ -273,17 +233,5 @@ class Tree {
             }
         }
         return false;
-    }
-}
-
-class TreeNode {
-    public int data, height;
-    public TreeNode left, right;
-
-    
-    public TreeNode(int data) {
-        this.data = data;
-        height = 0;
-        left = right = null;
     }
 }
