@@ -20,6 +20,7 @@ public class PriorityQueue<T> {
         int child = size - 1, parent;
         while ((parent = parent(child)) > -1 && prioritizer.compare(heapList.get(parent), heapList.get(child)) > 0) {
             swap(parent, child);
+            child = parent;
         }
     }
 
