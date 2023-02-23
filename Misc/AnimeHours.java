@@ -18,6 +18,7 @@ public class AnimeHours {
         float sum = 0;
         boolean print = false;
         while ((line = fileIn.readLine()) != null) {
+            line = line.trim();
             if (line.contains("Coming up:")) {
                 print = true;
             }
@@ -43,8 +44,7 @@ public class AnimeHours {
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < words.length; ++i) {
-                    sb.append(words[i]);
-                    sb.append(" ");
+                    sb.append(words[i] + (i < words.length - 1 ? " " : ""));
                 }
                 fileOut.write(sb.toString() + "\n");
             } else {
