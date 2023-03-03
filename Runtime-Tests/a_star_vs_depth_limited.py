@@ -139,16 +139,16 @@ def main():
 
     print("\n", "-" * 30, " Algorithm Analysis ", "-" * 30, sep="")
 
-    print(f"\nA-star search took\t\t\t\t{end_time_a_star: .2f} microseconds")
-    print(f"Depth Limited search took\t\t\t{end_time_dls: .2f} microseconds")
+    print(f"\nA-star search took\t\t\t\t{end_time_a_star:.2f} microseconds")
+    print(f"Depth Limited search took\t\t\t{end_time_dls:.2f} microseconds")
 
     print("\n", "-" * 80, sep="")
 
     diff = end_time_dls - end_time_a_star
     if diff < 0:
-        print(f"Depth Limited search was faster by\t\t{-diff: .2f} microseconds")
+        print(f"Depth Limited search was faster by\t\t{-diff:.2f} microseconds")
     elif diff > 0:
-        print(f"A-star search was faster by\t\t\t{diff: .2f} microseconds")
+        print(f"A-star search was faster by\t\t\t{diff:.2f} microseconds")
     else:
         print("Both searches finished at the same time")
 
