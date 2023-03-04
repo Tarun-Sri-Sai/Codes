@@ -116,7 +116,7 @@ def get_input(n_vertices):
         print(f"({vertex}: {heuristics[vertex]})", ", " if (
             i + 1) % 6 != 0 and i < len(vertices) - 1 else "\n\t\t", sep="", end="")
 
-    print("\n")
+    print()
 
     return adjacency_list, heuristics
 
