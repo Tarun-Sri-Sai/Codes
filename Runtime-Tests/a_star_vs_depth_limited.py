@@ -141,12 +141,12 @@ def main():
     graph.depth_limited_search(start, end, depth)
     end_time_dls = time.perf_counter() * 1e6 - start_time
 
-    print("\n", "-" * 30, " Algorithm Analysis ", "-" * 30, sep="")
+    print("\n", "=" * 30, " Algorithm Analysis ", "=" * 30, sep="")
 
     print(f"\nA-star search took\t\t\t\t{end_time_a_star:.2f} microseconds")
     print(f"Depth Limited search took\t\t\t{end_time_dls:.2f} microseconds")
 
-    print("\n", "-" * 80, sep="")
+    print("\n", "=" * 80, sep="")
 
     diff = end_time_dls - end_time_a_star
     if diff < 0:
@@ -157,12 +157,12 @@ def main():
     else:
         print("Both searches finished at the same time")
 
-    print("-" * 80)
+    print("=" * 80)
 
     print(f"\nA-star search visits\t\t\t\t{graph.a_star_count}")
     print(f"Depth Limited search visits\t\t\t{graph.dls_count}")
 
-    print("\n", "-" * 80, sep="")
+    print("\n", "=" * 80, sep="")
 
     diff = graph.a_star_count - graph.dls_count
     if diff < 0:
@@ -170,7 +170,7 @@ def main():
     else:
         print(f"Depth Limited search beats A-star search by\t{diff} visits")
 
-    print("-" * 80)
+    print("=" * 80)
 
     a_star_cost = sum(graph.adjacency_list[graph.a_star_path[i]][graph.a_star_path[i + 1]]
                       for i in range(len(graph.a_star_path) - 1))
@@ -180,7 +180,7 @@ def main():
     print(f"\nA-star search found a path that costs\t\t{a_star_cost}")
     print(f"Depth Limited search found a path that costs\t{dls_cost}")
 
-    print("\n", "-" * 80, sep="")
+    print("\n", "=" * 80, sep="")
 
     diff = a_star_cost - dls_cost
     if diff < 0:
@@ -190,7 +190,7 @@ def main():
     else:
         print(f"Both searches found the same path")
 
-    print("-" * 80)
+    print("=" * 80)
 
 
 if __name__ == "__main__":
