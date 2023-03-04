@@ -103,16 +103,20 @@ def get_input(n_vertices):
             while curr_vertex == vertex:
                 curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-            adjacency_list[vertex][curr_vertex] =  random.randint(1, 100)
+            adjacency_list[vertex][curr_vertex] = random.randint(1, 100)
 
         print(
             f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
 
-    print()
+    print("\nHeuristics:\t", end="")
 
     heuristics = {}
-    for vertex in vertices:
+    for i, vertex in enumerate(vertices):
         heuristics[vertex] = random.randint(1, 100)
+        print(f"({vertex}: {heuristics[vertex]})", ", " if (
+            i + 1) % 6 != 0 and i < len(vertices) - 1 else "\n\t\t", sep="", end="")
+
+    print("\n")
 
     return adjacency_list, heuristics
 
@@ -146,7 +150,8 @@ def main():
 
     diff = end_time_dls - end_time_a_star
     if diff < 0:
-        print(f"Depth Limited search was faster by\t\t{-diff:.2f} microseconds")
+        print(
+            f"Depth Limited search was faster by\t\t{-diff:.2f} microseconds")
     elif diff > 0:
         print(f"A-star search was faster by\t\t\t{diff:.2f} microseconds")
     else:
@@ -167,16 +172,16 @@ def main():
 
     print("-" * 80)
 
-    a_star_cost = sum(graph.adjacency_list[graph.a_star_path[i]][graph.a_star_path[i + 1]] 
+    a_star_cost = sum(graph.adjacency_list[graph.a_star_path[i]][graph.a_star_path[i + 1]]
                       for i in range(len(graph.a_star_path) - 1))
-    dls_cost = sum(graph.adjacency_list[graph.dls_path[i]][graph.dls_path[i + 1]] 
-                      for i in range(len(graph.dls_path) - 1))
-    
+    dls_cost = sum(graph.adjacency_list[graph.dls_path[i]][graph.dls_path[i + 1]]
+                   for i in range(len(graph.dls_path) - 1))
+
     print(f"\nA-star search found a path that costs\t\t{a_star_cost}")
     print(f"Depth Limited search found a path that costs\t{dls_cost}")
 
     print("\n", "-" * 80, sep="")
-    
+
     diff = a_star_cost - dls_cost
     if diff < 0:
         print(f"A-star search found a path cheaper by\t\t{-diff}")
