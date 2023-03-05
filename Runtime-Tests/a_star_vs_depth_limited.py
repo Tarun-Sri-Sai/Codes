@@ -91,30 +91,68 @@ class Graph:
         return False
 
 
-def get_input(n_vertices):
-    adjacency_list = {}
+def get_input():
+    n_vertices = int(input("Enter number of vertices: "))
+    if n_vertices > 26:
+        return
+
     vertices = [chr(i + 65) for i in range(n_vertices)]
     print(f"Vertices: {vertices}\n")
 
-    for vertex in vertices:
-        adjacency_list[vertex] = {}
-        for _ in range(random.randint(0, n_vertices - 1)):
-            curr_vertex = vertices[random.randint(0, n_vertices - 1)]
-            while curr_vertex == vertex:
+    adjacency_list = {}
+
+    print("How do you want your graph:\n\t1. Randomly generated\n\t2. Custom input")
+    choice = int(input("Enter your Choice: "))
+
+    if choice == 1:
+        for vertex in vertices:
+            adjacency_list[vertex] = {}
+
+            for _ in range(random.randint(0, n_vertices - 1)):
                 curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-            adjacency_list[vertex][curr_vertex] = random.randint(1, 100)
+                while curr_vertex == vertex:
+                    curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-        print(
-            f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
+                adjacency_list[vertex][curr_vertex] = random.randint(1, 100)
 
-    print("\nHeuristics:\t", end="")
+    else:
+        print("\nEnter the adjacency list", end=" ")
+        print("format: \"vertex_name,weight\" pairs separated by space, \"None\" for empty list):")
+
+        for vertex in vertices:
+            line = input(f"For {vertex}: ")
+
+            adjacency_list[vertex] = {}
+
+            if line != "None":
+                pairs = line.split()
+
+                for pair in pairs:
+                    comma_sep_fields = pair.split(sep=",")
+                    adjacency_list[vertex][comma_sep_fields[0]] = int(comma_sep_fields[1])
+
+    print("\nGraph:")
+    for vertex in vertices: 
+        print(f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
+
+    print("\nHow do you want your heuristics:\n\t1. Randomly generated\n\t2. Custom input")
+    choice = int(input("Enter your Choice: "))
 
     heuristics = {}
+
+    if choice == 1:
+        for vertex in vertices:
+            heuristics[vertex] = random.randint(1, 100)
+
+    else:
+        for vertex in vertices:
+            heuristics[vertex] = int(input(f"Enter heuristic for {vertex}: "))
+
+    print("\nHeuristics:\t", end="")
     for i, vertex in enumerate(vertices):
-        heuristics[vertex] = random.randint(1, 100)
-        print(f"({vertex}: {heuristics[vertex]})", ", " if (
-            i + 1) % 6 != 0 and i < len(vertices) - 1 else "\n\t\t", sep="", end="")
+        print(f"({vertex}: {heuristics[vertex]})", 
+            ", " if (i + 1) % 6 != 0 and i < len(vertices) - 1 else "\n\t\t", sep="", end="")
 
     print()
 
@@ -122,9 +160,7 @@ def get_input(n_vertices):
 
 
 def main():
-    n_vertices = 26
-
-    adjacency_list, heuristics = get_input(n_vertices)
+    adjacency_list, heuristics = get_input()
     graph = Graph(adjacency_list, heuristics)
 
     start = input("Enter starting node: ")
