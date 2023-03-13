@@ -182,7 +182,7 @@ def get_heuristics(adjacency_list, end_vertex):
     if choice == 1:
         for vertex in vertices:
             if vertex == end_vertex:
-                heuristics[vertex] = INF
+                heuristics[vertex] = 0
             else:    
                 heuristics[vertex] = find_heuristic(adjacency_list, vertex, end_vertex)
 
