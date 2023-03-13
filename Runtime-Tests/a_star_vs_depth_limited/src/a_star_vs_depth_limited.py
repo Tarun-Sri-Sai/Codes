@@ -144,13 +144,14 @@ def get_adjacency_list():
     return adjacency_list
 
 
-def bfs(adjacency_list, start, end):
+def find_dist(adjacency_list, start, end):
     queue = [start]
     visited = set(start)
     dist = 0
     
     while queue:
         size = len(queue)
+
         for _ in range(size):
             node = queue.pop(0)
             if node == end:
@@ -167,7 +168,7 @@ def bfs(adjacency_list, start, end):
 
 
 def find_heuristic(adjacency_list, start, end):
-    return bfs(adjacency_list, start, end)
+    return find_dist(adjacency_list, start, end)
 
 
 def get_heuristics(adjacency_list, end_vertex):
