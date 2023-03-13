@@ -6,6 +6,9 @@ import time
 sys.setrecursionlimit(int(1e8))
 
 
+INF = int(1e9)
+
+
 class Graph:
     def __init__(self, adjacency_list, heuristics):
         self.adjacency_list = adjacency_list
@@ -91,7 +94,7 @@ class Graph:
         return False
 
 
-def get_input():
+def get_adjacency_list():
     n_vertices = int(input("Enter number of vertices: "))
     if n_vertices > 26:
         return
@@ -102,7 +105,7 @@ def get_input():
     adjacency_list = {}
 
     print("How do you want your graph:\n\t1. Randomly generated\n\t2. Custom input")
-    choice = int(input("Enter your Choice: "))
+    choice = int(input("\nEnter your Choice: "))
 
     if choice == 1:
         for vertex in vertices:
@@ -136,14 +139,51 @@ def get_input():
     for vertex in vertices: 
         print(f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
 
-    print("\nHow do you want your heuristics:\n\t1. Randomly generated\n\t2. Custom input")
-    choice = int(input("Enter your Choice: "))
+    print()
+
+    return adjacency_list
+
+
+def bfs(adjacency_list, start, end):
+    queue = [start]
+    visited = set(start)
+    dist = 0
+    
+    while queue:
+        size = len(queue)
+        for _ in range(size):
+            node = queue.pop(0)
+            if node == end:
+                return dist
+            
+            for neighbor in adjacency_list[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+
+        dist += 1
+
+    return INF
+
+
+def find_heuristic(adjacency_list, start, end):
+    return bfs(adjacency_list, start, end)
+
+
+def get_heuristics(adjacency_list, end_vertex):
+    print("\nHow do you want your heuristics:\n\t1. Calculated\n\t2. Custom input")
+    choice = int(input("\nEnter your Choice: "))
+
+    vertices = [key for key in adjacency_list]
 
     heuristics = {}
 
     if choice == 1:
         for vertex in vertices:
-            heuristics[vertex] = random.randint(1, 100)
+            if vertex == end_vertex:
+                heuristics[vertex] = INF
+            else:    
+                heuristics[vertex] = find_heuristic(adjacency_list, vertex, end_vertex)
 
     else:
         for vertex in vertices:
@@ -153,19 +193,20 @@ def get_input():
     for i, vertex in enumerate(vertices):
         print(f"({vertex}: {heuristics[vertex]})", 
             ", " if (i + 1) % 6 != 0 and i < len(vertices) - 1 else "\n\t\t", sep="", end="")
-
-    print()
-
-    return adjacency_list, heuristics
+        
+    return heuristics
 
 
 def main():
-    adjacency_list, heuristics = get_input()
-    graph = Graph(adjacency_list, heuristics)
+    adjacency_list = get_adjacency_list()
 
     start = input("Enter starting node: ")
     end = input("Enter destination node: ")
     depth = int(input("Enter depth for depth limited search: "))
+
+    heuristics = get_heuristics(adjacency_list, end)
+
+    graph = Graph(adjacency_list, heuristics)
 
     print()
 
