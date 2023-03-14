@@ -182,7 +182,7 @@ def find_dist(adjacency_list, start, end):
 
 
 def find_heuristic(adjacency_list, start, end):
-    return find_dist(adjacency_list, start, end)
+    return find_dist(adjacency_list, start, end) * 10
 
 
 def get_heuristics(adjacency_list, end_vertex):
