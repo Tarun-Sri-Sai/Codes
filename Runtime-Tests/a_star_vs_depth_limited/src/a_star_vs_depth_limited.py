@@ -136,8 +136,10 @@ def get_adjacency_list():
                     adjacency_list[vertex][comma_sep_fields[0]] = int(comma_sep_fields[1])
 
     print("\nGraph:")
+    time.sleep(0.25)
     for vertex in vertices: 
         print(f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
+        time.sleep(0.25)
 
     print()
 
@@ -191,8 +193,9 @@ def get_heuristics(adjacency_list, end_vertex):
             heuristics[vertex] = int(input(f"Enter heuristic for {vertex}: "))
 
     print("\nHeuristics:\t", end="")
+    time.sleep(0.25)
     for i, vertex in enumerate(vertices):
-        print(f"({vertex}: {heuristics[vertex]})", 
+        print(f"({vertex}: ", f"{heuristics[vertex]})" if heuristics[vertex] < INF else "INF)", 
             ", " if (i + 1) % 6 != 0 and i < len(vertices) - 1 else "\n\t\t", sep="", end="")
         
     return heuristics
@@ -220,35 +223,49 @@ def main():
     end_time_dls = time.perf_counter() * 1e6 - start_time
 
     print("\n", "=" * 30, " Algorithm Analysis ", "=" * 30, sep="")
+    time.sleep(0.25)
 
     print(f"\nA-star search took\t\t\t\t{end_time_a_star:.2f} microseconds")
+    time.sleep(0.25)
     print(f"Depth Limited search took\t\t\t{end_time_dls:.2f} microseconds")
+    time.sleep(0.25)
 
     print("\n", "=" * 80, sep="")
+    time.sleep(0.25)
 
     diff = end_time_dls - end_time_a_star
     if diff < 0:
         print(
             f"Depth Limited search was faster by\t\t{-diff:.2f} microseconds")
+        time.sleep(0.25)
     elif diff > 0:
         print(f"A-star search was faster by\t\t\t{diff:.2f} microseconds")
+        time.sleep(0.25)
     else:
         print("Both searches finished at the same time")
+        time.sleep(0.25)
 
     print("=" * 80)
+    time.sleep(0.25)
 
     print(f"\nA-star search visits\t\t\t\t{graph.a_star_count}")
+    time.sleep(0.25)
     print(f"Depth Limited search visits\t\t\t{graph.dls_count}")
+    time.sleep(0.25)
 
     print("\n", "=" * 80, sep="")
+    time.sleep(0.25)
 
     diff = graph.a_star_count - graph.dls_count
     if diff < 0:
         print(f"A-star search beats Depth Limited search by\t{-diff} visits")
+        time.sleep(0.25)
     else:
         print(f"Depth Limited search beats A-star search by\t{diff} visits")
+        time.sleep(0.25)
 
     print("=" * 80)
+    time.sleep(0.25)
 
     a_star_cost = sum(graph.adjacency_list[graph.a_star_path[i]][graph.a_star_path[i + 1]]
                       for i in range(len(graph.a_star_path) - 1))
@@ -256,19 +273,26 @@ def main():
                    for i in range(len(graph.dls_path) - 1))
 
     print(f"\nA-star search found a path that costs\t\t{a_star_cost}")
+    time.sleep(0.25)
     print(f"Depth Limited search found a path that costs\t{dls_cost}")
+    time.sleep(0.25)
 
     print("\n", "=" * 80, sep="")
+    time.sleep(0.25)
 
     diff = a_star_cost - dls_cost
     if diff < 0:
         print(f"A-star search found a path cheaper by\t\t{-diff}")
+        time.sleep(0.25)
     elif diff > 0:
         print(f"Depth Limited search found a path cheaper by\t{diff}")
+        time.sleep(0.25)
     else:
         print(f"Both searches found the same path")
+        time.sleep(0.25)
 
     print("=" * 80)
+    time.sleep(0.25)
 
 
 if __name__ == "__main__":
