@@ -7,7 +7,7 @@ sys.setrecursionlimit(int(1e8))
 
 
 INF = int(1e9)
-QUARTER_SEC = 0.25
+ONE_TWENTY_FIFTH_SEC = 0.04
 
 class Graph:
     def __init__(self, adjacency_list, heuristics):
@@ -114,7 +114,7 @@ def get_adjacency_list():
                 while curr_vertex == vertex or curr_vertex in adjacency_list[vertex]:
                     curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-                adjacency_list[vertex][curr_vertex] = random.randint(1, 100)
+                adjacency_list[vertex][curr_vertex] = random.randint(1, 99)
 
     else:
         print("\nEnter the adjacency list", end=" ")
@@ -133,10 +133,25 @@ def get_adjacency_list():
                     adjacency_list[vertex][comma_sep_fields[0]] = int(comma_sep_fields[1])
 
     print("\nGraph:")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
     for vertex in vertices: 
-        print(f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
-        time.sleep(QUARTER_SEC)
+        print(f"{vertex}: ", end="")
+        if adjacency_list[vertex]:
+            i_max = len(adjacency_list[vertex]) - 1
+
+            print("{", end="")
+            for i, (neighbor, weight) in enumerate(adjacency_list[vertex].items()):
+                print(f"{neighbor}: {weight:2d}", end="")
+                if i == i_max:
+                    print("}")
+                else:
+                    print(", ", end="")
+                    
+                sys.stdout.flush()
+                time.sleep(ONE_TWENTY_FIFTH_SEC)
+        else:
+            print("{}")
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print()
 
@@ -190,15 +205,15 @@ def get_heuristics(adjacency_list, end_vertex):
             heuristics[vertex] = int(input(f"Enter heuristic for {vertex}: "))
 
     print("\nHeuristics:\t", end="")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
     for i, vertex in enumerate(vertices):
-        print(f"({vertex}: ", f"{heuristics[vertex]})" if heuristics[vertex] < INF else "INF)", sep="", end="")
+        print(f"({vertex}: ", f"{heuristics[vertex]:2d})" if heuristics[vertex] < INF else "IN)", sep="", end="")
         if (i + 1) % 7 != 0 and i < len(vertices) - 1:
             print(", ", end="")
         else:
             print("\n\t\t", end="")
         sys.stdout.flush()
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
         
     return heuristics
 
@@ -232,7 +247,7 @@ def main():
             else:
                 print(" -> ", end="")
             sys.stdout.flush()
-            time.sleep(QUARTER_SEC)
+            time.sleep(ONE_TWENTY_FIFTH_SEC)
     else:
         print("Path not found using A-star search!")
 
@@ -252,54 +267,54 @@ def main():
             else:
                 print(" -> ", end="")
             sys.stdout.flush()
-            time.sleep(QUARTER_SEC)
+            time.sleep(ONE_TWENTY_FIFTH_SEC)
     else:
         print("Path not found using Depth Limited search!")
 
     print("\n", "=" * 30, " Algorithm Analysis ", "=" * 30, sep="")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
-    print(f"\nA-star search took\t\t\t\t{end_time_a_star:.2f} microseconds")
-    time.sleep(QUARTER_SEC)
-    print(f"Depth Limited search took\t\t\t{end_time_dls:.2f} microseconds")
-    time.sleep(QUARTER_SEC)
+    print(f"\nA-star search took\t\t\t\t{end_time_a_star:3.2f} microseconds")
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
+    print(f"Depth Limited search took\t\t\t{end_time_dls:3.2f} microseconds")
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print("\n", "=" * 80, sep="")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     diff = end_time_dls - end_time_a_star
     if diff < 0:
         print(
-            f"Depth Limited search was faster by\t\t{-diff:.2f} microseconds")
-        time.sleep(QUARTER_SEC)
+            f"Depth Limited search was faster by\t\t{-diff:3.2f} microseconds")
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
     elif diff > 0:
-        print(f"A-star search was faster by\t\t\t{diff:.2f} microseconds")
-        time.sleep(QUARTER_SEC)
+        print(f"A-star search was faster by\t\t\t{diff:3.2f} microseconds")
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
     else:
         print("Both searches finished at the same time")
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print("=" * 80)
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print(f"\nA-star search visits\t\t\t\t{graph.a_star_count}")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
     print(f"Depth Limited search visits\t\t\t{graph.dls_count}")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print("\n", "=" * 80, sep="")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     diff = graph.a_star_count - graph.dls_count
     if diff < 0:
         print(f"A-star search beats Depth Limited search by\t{-diff} visits")
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
     else:
         print(f"Depth Limited search beats A-star search by\t{diff} visits")
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print("=" * 80)
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     a_star_cost = sum(graph.adjacency_list[graph.a_star_path[i]][graph.a_star_path[i + 1]]
                       for i in range(len(graph.a_star_path) - 1))
@@ -307,26 +322,26 @@ def main():
                    for i in range(len(graph.dls_path) - 1))
 
     print(f"\nA-star search found a path that costs\t\t{a_star_cost}")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
     print(f"Depth Limited search found a path that costs\t{dls_cost}")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print("\n", "=" * 80, sep="")
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     diff = a_star_cost - dls_cost
     if diff < 0:
         print(f"A-star search found a path cheaper by\t\t{-diff}")
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
     elif diff > 0:
         print(f"Depth Limited search found a path cheaper by\t{diff}")
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
     else:
         print(f"Both searches found the same path")
-        time.sleep(QUARTER_SEC)
+        time.sleep(ONE_TWENTY_FIFTH_SEC)
 
     print("=" * 80)
-    time.sleep(QUARTER_SEC)
+    time.sleep(ONE_TWENTY_FIFTH_SEC)
 
 
 if __name__ == "__main__":

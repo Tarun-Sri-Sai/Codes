@@ -1,13 +1,13 @@
 def get_info(line):
-    if line == "None":
+    if line == "{}":
         return "None"
     
     result = ""
     trimmed_line = line[1:-1]
-    vertex_pairs = trimmed_line.split(", ")
+    vertex_pairs = trimmed_line.split(",\\s+")
     
     for vertex_pair in vertex_pairs:
-        tokens = vertex_pair.split(": ")
+        tokens = vertex_pair.split(":\\s+")
         result += str(tokens[0][1:-1] + ',' + tokens[1] + ' ')
 
     return result[:-1]
