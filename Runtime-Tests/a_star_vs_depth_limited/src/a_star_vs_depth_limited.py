@@ -38,8 +38,7 @@ class Graph:
                     n = v
 
             if n == None:
-                print("Path not found using A-star search!")
-                return
+                return False
 
             if n == stop_node:
                 while parents[n] != n:
@@ -47,9 +46,7 @@ class Graph:
                     n = parents[n]
                 self.a_star_path.append(start_node)
                 self.a_star_path.reverse()
-                print(
-                    f"Path found using A-star search!\t\t{self.a_star_path}")
-                return
+                return True
 
             for m, weight in self.get_neighbors(n).items():
                 self.a_star_count += 1
@@ -67,14 +64,14 @@ class Graph:
 
             open_list.remove(n)
             closed_list.add(n)
-        print("Path not found using A-star search!")
+        return False
 
     def depth_limited_search(self, start_vertex, target_vertex, depth_limit):
         self.dls_path.append(start_vertex)
         if self.dls(start_vertex, target_vertex, depth_limit):
-            print(f"Path found using Depth Limited search!\t{self.dls_path}")
+            return True
         else:
-            print("Path not found using Depth Limited search!")
+            return False
 
     def dls(self, current_vertex, target_vertex, depth_limit):
         if current_vertex == target_vertex:
@@ -220,12 +217,44 @@ def main():
     print()
 
     start_time = time.perf_counter() * 1e6
-    graph.a_star_algorithm(start, end)
+    a_star_success = graph.a_star_algorithm(start, end)
     end_time_a_star = time.perf_counter() * 1e6 - start_time
 
+    if a_star_success:
+        i_max = len(graph.a_star_path) - 1
+
+        print("Path found using A-star search!\t\t", end="")
+        sys.stdout.flush()
+        for i, vertex in enumerate(graph.a_star_path):
+            print(vertex, sep="", end="")
+            if i == i_max:
+                print("\n")
+            else:
+                print(" -> ", end="")
+            sys.stdout.flush()
+            time.sleep(QUARTER_SEC)
+    else:
+        print("Path not found using A-star search!")
+
     start_time = time.perf_counter() * 1e6
-    graph.depth_limited_search(start, end, depth)
+    dls_success = graph.depth_limited_search(start, end, depth)
     end_time_dls = time.perf_counter() * 1e6 - start_time
+
+    if dls_success:
+        i_max = len(graph.dls_path) - 1
+
+        print("Path found using Depth Limited search!\t", end="")
+        sys.stdout.flush()
+        for i, vertex in enumerate(graph.dls_path):
+            print(vertex, sep="", end="")
+            if i == i_max:
+                print("\n")
+            else:
+                print(" -> ", end="")
+            sys.stdout.flush()
+            time.sleep(QUARTER_SEC)
+    else:
+        print("Path not found using Depth Limited search!")
 
     print("\n", "=" * 30, " Algorithm Analysis ", "=" * 30, sep="")
     time.sleep(QUARTER_SEC)
