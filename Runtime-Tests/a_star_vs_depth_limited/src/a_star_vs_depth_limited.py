@@ -9,6 +9,7 @@ sys.setrecursionlimit(int(1e8))
 INF = int(1e9)
 QUARTER_SEC = 0.25
 
+
 class Graph:
     def __init__(self, adjacency_list, heuristics):
         self.adjacency_list = adjacency_list
@@ -48,7 +49,7 @@ class Graph:
                 self.a_star_path.reverse()
                 return True
 
-            for m, weight in self.get_neighbors(n).items():
+            for m, weight in self.get_neighbors(n):
                 self.a_star_count += 1
                 if m not in open_list and m not in closed_list:
                     open_list.add(m)
@@ -80,7 +81,7 @@ class Graph:
         if depth_limit == 0:
             return False
 
-        for neighbor, _ in self.get_neighbors(current_vertex).items():
+        for neighbor, _ in self.get_neighbors(current_vertex):
             self.dls_count += 1
             self.dls_path.append(neighbor)
             if self.dls(neighbor, target_vertex, depth_limit - 1):
@@ -106,15 +107,17 @@ def get_adjacency_list():
 
     if choice == 1:
         for vertex in vertices:
-            adjacency_list[vertex] = {}
+            neighbors = {}
 
             for _ in range(random.randint(0, n_vertices - 1)):
                 curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-                while curr_vertex == vertex or curr_vertex in adjacency_list[vertex]:
+                while curr_vertex == vertex or curr_vertex in neighbors:
                     curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-                adjacency_list[vertex][curr_vertex] = random.randint(1, 100)
+                neighbors[curr_vertex] = random.randint(10, 99)
+
+            adjacency_list[vertex] = sorted(neighbors.items())
 
     else:
         print("\nEnter the adjacency list", end=" ")
@@ -130,12 +133,14 @@ def get_adjacency_list():
 
                 for pair in pairs:
                     comma_sep_fields = pair.split(sep=",")
-                    adjacency_list[vertex][comma_sep_fields[0]] = int(comma_sep_fields[1])
+                    adjacency_list[vertex][comma_sep_fields[0]] = int(
+                        comma_sep_fields[1])
 
     print("\nGraph:")
     time.sleep(QUARTER_SEC)
-    for vertex in vertices: 
-        print(f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "None")
+    for vertex in vertices:
+        print(
+            f"{vertex}:", f"{adjacency_list[vertex]}" if adjacency_list[vertex] else "[]")
         time.sleep(QUARTER_SEC)
 
     print()
@@ -147,7 +152,7 @@ def find_dist(adjacency_list, start, end):
     queue = [start]
     visited = set(start)
     dist = 0
-    
+
     while queue:
         size = len(queue)
 
@@ -155,8 +160,8 @@ def find_dist(adjacency_list, start, end):
             node = queue.pop(0)
             if node == end:
                 return dist
-            
-            for neighbor in adjacency_list[node]:
+
+            for neighbor, weight in adjacency_list[node]:
                 if neighbor not in visited:
                     visited.add(neighbor)
                     queue.append(neighbor)
@@ -167,7 +172,9 @@ def find_dist(adjacency_list, start, end):
 
 
 def find_heuristic(adjacency_list, start, end):
-    return find_dist(adjacency_list, start, end)
+    result = find_dist(adjacency_list, start, end)
+
+    return result * 10 if result < INF else INF
 
 
 def get_heuristics(adjacency_list, end_vertex):
@@ -182,8 +189,9 @@ def get_heuristics(adjacency_list, end_vertex):
         for vertex in vertices:
             if vertex == end_vertex:
                 heuristics[vertex] = 0
-            else:    
-                heuristics[vertex] = find_heuristic(adjacency_list, vertex, end_vertex)
+            else:
+                heuristics[vertex] = find_heuristic(
+                    adjacency_list, vertex, end_vertex)
 
     else:
         for vertex in vertices:
@@ -192,15 +200,25 @@ def get_heuristics(adjacency_list, end_vertex):
     print("\nHeuristics:\t", end="")
     time.sleep(QUARTER_SEC)
     for i, vertex in enumerate(vertices):
-        print(f"({vertex}: ", f"{heuristics[vertex]})" if heuristics[vertex] < INF else "INF)", sep="", end="")
+        print(
+            f"({vertex}: ", f"{heuristics[vertex]:3d})" if heuristics[vertex] < INF else "INF)", sep="", end="")
         if (i + 1) % 7 != 0 and i < len(vertices) - 1:
             print(", ", end="")
         else:
             print("\n\t\t", end="")
+
         sys.stdout.flush()
         time.sleep(QUARTER_SEC)
-        
+
     return heuristics
+
+
+def getvalue(list, tuple_first):
+    for first, second in list:
+        if first == tuple_first:
+            return second
+
+    return 0
 
 
 def main():
@@ -301,9 +319,9 @@ def main():
     print("=" * 80)
     time.sleep(QUARTER_SEC)
 
-    a_star_cost = sum(graph.adjacency_list[graph.a_star_path[i]][graph.a_star_path[i + 1]]
+    a_star_cost = sum(getvalue(graph.adjacency_list[graph.a_star_path[i]], graph.a_star_path[i + 1])
                       for i in range(len(graph.a_star_path) - 1))
-    dls_cost = sum(graph.adjacency_list[graph.dls_path[i]][graph.dls_path[i + 1]]
+    dls_cost = sum(getvalue(graph.adjacency_list[graph.dls_path[i]], graph.dls_path[i + 1])
                    for i in range(len(graph.dls_path) - 1))
 
     print(f"\nA-star search found a path that costs\t\t{a_star_cost}")

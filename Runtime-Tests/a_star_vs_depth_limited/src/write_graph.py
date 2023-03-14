@@ -1,5 +1,5 @@
 def get_info(line):
-    if line == "None":
+    if line == "[]":
         return "None"
     
     result = ""
