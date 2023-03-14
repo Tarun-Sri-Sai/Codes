@@ -111,7 +111,7 @@ def get_adjacency_list():
             for _ in range(random.randint(0, n_vertices - 1)):
                 curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
-                while curr_vertex == vertex:
+                while curr_vertex == vertex or curr_vertex in adjacency_list[vertex]:
                     curr_vertex = vertices[random.randint(0, n_vertices - 1)]
 
                 adjacency_list[vertex][curr_vertex] = random.randint(1, 100)
