@@ -248,7 +248,7 @@ def main():
             else:
                 print(" -> ", end="")
             sys.stdout.flush()
-            time.sleep(ONE_HUNDREDTH_SEC)
+            time.sleep(ONE_FIFTH_SEC)
     else:
         print("Path not found using A-star search!")
 
@@ -268,7 +268,7 @@ def main():
             else:
                 print(" -> ", end="")
             sys.stdout.flush()
-            time.sleep(ONE_HUNDREDTH_SEC)
+            time.sleep(ONE_FIFTH_SEC)
     else:
         print("Path not found using Depth Limited search!")
 
