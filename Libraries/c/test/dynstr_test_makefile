@@ -4,8 +4,11 @@ CPPFLAGS=-Wall -Wextra -Wpedantic -Werror
 
 all: output/dynstr_test.exe
 
-output/%.exe: obj/%.o
+output/%.exe: obj/dynstr_test.o obj/dynstr.o
 	${CC} $^ -o $@
+
+obj/%.o: ../dynstr/%.c
+	${CC} ${CPPFLAGS} -c $^ -o $@
 
 obj/%.o: %.c
 	${CC} ${CPPFLAGS} -c $^ -o $@
