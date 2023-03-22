@@ -11,12 +11,12 @@ void push_back(linked_list *list, int val)
     }
     list_node *tail = list->tail;
     list_node *prev = tail->prev;
-    list_node *new_node = get_new_node(val);
+    list_node *added_node = new_node(val);
 
-    new_node->prev = prev;
-    new_node->next = tail;
-    tail->prev = new_node;
-    prev->next = new_node;
+    added_node->prev = prev;
+    added_node->next = tail;
+    tail->prev = added_node;
+    prev->next = added_node;
 }
 
 void push_front(linked_list *list, int val)
@@ -26,12 +26,12 @@ void push_front(linked_list *list, int val)
     }
     list_node *head = list->head;
     list_node *next = head->next;
-    list_node *new_node = get_new_node(val);
+    list_node *added_node = new_node(val);
 
-    new_node->next = next;
-    new_node->prev = head;
-    head->next = new_node;
-    next->prev = new_node;
+    added_node->next = next;
+    added_node->prev = head;
+    head->next = added_node;
+    next->prev = added_node;
 }
 
 void pop_back(linked_list *list)
@@ -50,7 +50,7 @@ void pop_back(linked_list *list)
 
     prev->next = tail;
     tail->prev = prev;
-    free_node(&deleted_node);
+    delete_node(&deleted_node);
 }
 
 void pop_front(linked_list *list)
@@ -69,7 +69,7 @@ void pop_front(linked_list *list)
 
     head->next = next;
     next->prev = head;
-    free_node(&deleted_node);
+    delete_node(&deleted_node);
 }
 
 void delete_list(linked_list **list_ptr)
@@ -78,18 +78,18 @@ void delete_list(linked_list **list_ptr)
 
     for (next = node->next; next != NULL; node = next) {
         next = node->next;
-        free_node(&node);
+        delete_node(&node);
     }
-    free_node(&(list_ptr[DEREF]->tail));
+    delete_node(&(list_ptr[DEREF]->tail));
     list_ptr[DEREF] = NULL;
 }
 
-linked_list *get_new_list()
+linked_list *new_list()
 {
     linked_list *list = (linked_list *)malloc(sizeof(linked_list));
 
-    list->head = get_new_node(0);
-    list->tail = get_new_node(0);
+    list->head = new_node(0);
+    list->tail = new_node(0);
     list->head->next = list->tail;
     list->tail->prev = list->head;
     return list;
