@@ -10,10 +10,10 @@ typedef struct linked_list_struct
 } linked_list;
 
 linked_list *new_list();
-void push_back(linked_list *list, int val);
-void push_front(linked_list *list, int val);
-void pop_back(linked_list *list);
-void pop_front(linked_list *list);
+void list_push_back(linked_list *list, int val);
+void list_push_front(linked_list *list, int val);
+void list_pop_back(linked_list *list);
+void list_pop_front(linked_list *list);
 void delete_list(linked_list **list_ptr);
 void print_list(linked_list *list);
 

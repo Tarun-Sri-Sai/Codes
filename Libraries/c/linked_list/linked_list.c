@@ -4,7 +4,7 @@
 
 #define DEREF 0
 
-void push_back(linked_list *list, int val)
+void list_push_back(linked_list *list, int val)
 {
     if (list == NULL)
     {
@@ -20,7 +20,7 @@ void push_back(linked_list *list, int val)
     prev->next = added_node;
 }
 
-void push_front(linked_list *list, int val)
+void list_push_front(linked_list *list, int val)
 {
     if (list == NULL)
     {
@@ -36,7 +36,7 @@ void push_front(linked_list *list, int val)
     next->prev = added_node;
 }
 
-void pop_back(linked_list *list)
+void list_pop_back(linked_list *list)
 {
     if (list == NULL)
     {
@@ -57,7 +57,7 @@ void pop_back(linked_list *list)
     delete_node(&deleted_node);
 }
 
-void pop_front(linked_list *list)
+void list_pop_front(linked_list *list)
 {
     if (list == NULL)
     {

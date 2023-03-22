@@ -9,16 +9,16 @@ typedef struct String_struct
 
 String *init(char *val);
 String *new_string();
-void append(String *source, char *appendix);
-void extend(String *source, String *extension);
+void string_append(String *source, char *appendix);
+void string_extend(String *source, String *extension);
 void delete_string(String **source_ptr);
-void debug_print(String *source);
-void push_back(String *source, char appendix);
-void pop_back(String **source_ptr);
+void string_debug_print(String *source);
+void string_push_back(String *source, char appendix);
+void string_pop_back(String **source_ptr);
 const char *to_string(String *source);
-int length(String *source);
-void nappend(String *source, char *appendix, int max_size);
-void nextend(String *source, String *extension, int max_size);
+int string_length(String *source);
+void string_nappend(String *source, char *appendix, int max_size);
+void string_nextend(String *source, String *extension, int max_size);
 int min(int a, int b);
 
 #endif

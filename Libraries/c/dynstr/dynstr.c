@@ -23,7 +23,7 @@ String *new_string()
     return retval;
 }
 
-void append(String *source, char *appendix)
+void string_append(String *source, char *appendix)
 {
     if (source == NULL)
     {
@@ -43,7 +43,7 @@ void append(String *source, char *appendix)
     source->val[source->length] = '\0';
 }
 
-void extend(String *source, String *extension)
+void string_extend(String *source, String *extension)
 {
     if (source == NULL || extension == NULL)
     {
@@ -74,7 +74,7 @@ void delete_string(String **source_ptr)
     source_ptr[DEREF] = NULL;
 }
 
-void debug_print(String *source)
+void string_debug_print(String *source)
 {
     if (source == NULL)
     {
@@ -83,7 +83,7 @@ void debug_print(String *source)
     printf("Length: %d\nCapacity: %d\nString: %s\n", source->length, source->capacity, source->val);
 }
 
-void push_back(String *source, char appendix)
+void string_push_back(String *source, char appendix)
 {
     if (source == NULL)
     {
@@ -102,7 +102,7 @@ void push_back(String *source, char appendix)
     source->val[source->length] = '\0';
 }
 
-void pop_back(String **source_ptr)
+void string_pop_back(String **source_ptr)
 {
     if (source_ptr[DEREF] == NULL)
     {
@@ -132,7 +132,7 @@ const char *to_string(String *source)
     return source->val;
 }
 
-int length(String *source)
+int string_length(String *source)
 {
     if (source == NULL)
     {
@@ -141,7 +141,7 @@ int length(String *source)
     return source->length;
 }
 
-void nappend(String *source, char *appendix, int max_size)
+void string_nappend(String *source, char *appendix, int max_size)
 {
     if (source == NULL)
     {
@@ -161,7 +161,7 @@ void nappend(String *source, char *appendix, int max_size)
     source->val[source->length] = '\0';
 }
 
-void nextend(String *source, String *extension, int max_size)
+void string_nextend(String *source, String *extension, int max_size)
 {
     if (source == NULL || extension == NULL)
     {
