@@ -6,7 +6,8 @@
 
 void push_back(linked_list *list, int val)
 {
-    if (list == NULL) {
+    if (list == NULL)
+    {
         return;
     }
     list_node *tail = list->tail;
@@ -21,7 +22,8 @@ void push_back(linked_list *list, int val)
 
 void push_front(linked_list *list, int val)
 {
-    if (list == NULL) {
+    if (list == NULL)
+    {
         return;
     }
     list_node *head = list->head;
@@ -36,13 +38,15 @@ void push_front(linked_list *list, int val)
 
 void pop_back(linked_list *list)
 {
-    if (list == NULL) {
+    if (list == NULL)
+    {
         return;
     }
     list_node *head = list->head;
     list_node *tail = list->tail;
 
-    if (head->next == tail) {
+    if (head->next == tail)
+    {
         return;
     }
     list_node *deleted_node = tail->prev;
@@ -55,13 +59,15 @@ void pop_back(linked_list *list)
 
 void pop_front(linked_list *list)
 {
-    if (list == NULL) {
+    if (list == NULL)
+    {
         return;
     }
     list_node *head = list->head;
     list_node *tail = list->tail;
 
-    if (head->next == tail) {
+    if (head->next == tail)
+    {
         return;
     }
     list_node *deleted_node = head->next;
@@ -76,7 +82,8 @@ void delete_list(linked_list **list_ptr)
 {
     list_node *node = list_ptr[DEREF]->head, *next;
 
-    for (next = node->next; next != NULL; node = next) {
+    for (next = node->next; next != NULL; node = next)
+    {
         next = node->next;
         delete_node(&node);
     }
@@ -95,14 +102,17 @@ linked_list *new_list()
     return list;
 }
 
-void print_list(linked_list *list) {
-    if (list == NULL) {
+void print_list(linked_list *list)
+{
+    if (list == NULL)
+    {
         return;
     }
     list_node *head = list->head, *ptr, *tail = list->tail;
 
     printf("[");
-    for (ptr = head->next; ptr != tail; ptr = ptr->next) {
+    for (ptr = head->next; ptr != tail; ptr = ptr->next)
+    {
         printf("%d%s", ptr->val, (ptr->next != tail ? " -> " : ""));
     }
     printf("]\n");

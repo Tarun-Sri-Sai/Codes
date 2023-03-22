@@ -4,7 +4,8 @@
 #include "list_node.h"
 #include <stdlib.h>
 
-typedef struct linked_list_struct {
+typedef struct linked_list_struct
+{
     list_node *head;
     list_node *tail;
 } linked_list;
