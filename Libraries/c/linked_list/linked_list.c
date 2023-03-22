@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "linked_list.h"
 
 #define DEREF 0
+#define MAX_STRING 0xFFFF
 
 void list_push_back(linked_list *list, int val)
 {
@@ -102,18 +104,28 @@ linked_list *new_list()
     return list;
 }
 
-void list_debug_print(linked_list *list)
+char *list_debug_print(linked_list *list)
 {
     if (list == NULL)
     {
-        return;
+        return "";
     }
     list_node *head = list->head, *ptr, *tail = list->tail;
+    char *debug_string = (char *) calloc(MAX_STRING, sizeof(char));
+    int debug_length = sprintf_s(debug_string, MAX_STRING, "[");
 
-    printf("[");
     for (ptr = head->next; ptr != tail; ptr = ptr->next)
     {
-        printf("%d%s", ptr->val, (ptr->next != tail ? " -> " : ""));
+        debug_length += sprintf_s(debug_string + debug_length, MAX_STRING - debug_length, "%d%s", ptr->val, (ptr->next != tail ? " -> " : ""));
     }
-    printf("]\n");
+    debug_length += sprintf_s(debug_string + debug_length, MAX_STRING - debug_length, "]");
+    trim_string(&debug_string);
+    return debug_string;
+}
+
+static void trim_string(char **string_ptr)
+{
+    size_t length = strnlen_s(string_ptr[DEREF], MAX_STRING);
+
+    string_ptr[DEREF] = (char *) realloc(string_ptr[DEREF], length * sizeof(char));
 }

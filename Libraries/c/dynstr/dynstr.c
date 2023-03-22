@@ -74,13 +74,17 @@ void delete_string(String **source_ptr)
     source_ptr[DEREF] = NULL;
 }
 
-void string_debug_print(String *source)
+char *string_debug_print(String *source)
 {
     if (source == NULL)
     {
-        return;
+        return "";
     }
-    printf("Length: %d\nCapacity: %d\nString: %s\n", source->length, source->capacity, source->val);
+    char *debug_string = (char *) calloc(MAX_STRING, sizeof(char));
+
+    sprintf_s(debug_string, MAX_STRING, "Length: %d\nCapacity: %d\nString: %s\n", source->length, source->capacity, source->val);
+    trim_string(&debug_string);
+    return debug_string;
 }
 
 void string_push_back(String *source, char appendix)
@@ -129,7 +133,11 @@ const char *string_value_of(String *source)
     {
         return NULL;
     }
-    return source->val;
+    int length = string_length(source);
+    char *result = (char *) calloc(length, sizeof(char));
+
+    memcpy_s(result, length, source->val, length);
+    return result;
 }
 
 int string_length(String *source)
@@ -184,4 +192,11 @@ void string_nextend(String *source, String *extension, int max_size)
 static int min(int a, int b)
 {
     return a < b ? a : b;
+}
+
+static void trim_string(char **string_ptr)
+{
+    size_t length = strnlen_s(string_ptr[DEREF], MAX_STRING);
+
+    string_ptr[DEREF] = (char *) realloc(string_ptr[DEREF], length * sizeof(char));
 }

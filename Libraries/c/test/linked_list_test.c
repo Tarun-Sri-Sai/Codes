@@ -5,19 +5,19 @@
 int main()
 {
     linked_list *list = new_list();
-    print_list(list);
+    printf("%s\n", list_debug_print(list));
 
-    push_front(list, 2);
-    print_list(list);
+    list_push_front(list, 2);
+    printf("%s\n", list_debug_print(list));
 
-    push_back(list, 1);
-    print_list(list);
+    list_push_back(list, 1);
+    printf("%s\n", list_debug_print(list));
 
-    pop_front(list);
-    print_list(list);
+    list_pop_front(list);
+    printf("%s\n", list_debug_print(list));
 
-    pop_back(list);
-    print_list(list);
+    list_pop_back(list);
+    printf("%s\n", list_debug_print(list));
 
     return EXIT_SUCCESS;
 }
