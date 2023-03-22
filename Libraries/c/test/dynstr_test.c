@@ -11,13 +11,13 @@ int main()
     const int TOTAL = 10;
     int count = 0;
 
-    String *str1 = create();
+    String *str1 = new_string();
     assert(strcmp(to_string(str1), "") == STRING_EQUAL);
-    printf("[%d/%d]\tstr1 has \"\"\t\t\t\tafter create()\t\twas called once\n", ++count, TOTAL);
+    printf("[%d/%d]\tstr1 has \"\"\t\t\t\tafter new_string()\t\twas called once\n", ++count, TOTAL);
 
-    discard(&str1);
+    delete_string(&str1);
     assert(str1 == NULL);
-    printf("[%d/%d]\tstr1 is NULL\t\t\t\tafter discard()\t\twas called once\n", ++count, TOTAL);
+    printf("[%d/%d]\tstr1 is NULL\t\t\t\tafter delete_string()\t\twas called once\n", ++count, TOTAL);
 
     str1 = init("Hello");
     assert(strcmp(to_string(str1), "Hello") == STRING_EQUAL);

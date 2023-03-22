@@ -9,12 +9,12 @@ typedef struct linked_list_struct {
     list_node *tail;
 } linked_list;
 
-linked_list *get_new_list();
+linked_list *new_list();
 void push_back(linked_list *list, int val);
 void push_front(linked_list *list, int val);
 void pop_back(linked_list *list);
 void pop_front(linked_list *list);
-void free_list(linked_list **list_ptr);
+void delete_list(linked_list **list_ptr);
 void print_list(linked_list *list);
 
 #endif

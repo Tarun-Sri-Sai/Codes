@@ -72,7 +72,7 @@ void pop_front(linked_list *list)
     free_node(&deleted_node);
 }
 
-void free_list(linked_list **list_ptr)
+void delete_list(linked_list **list_ptr)
 {
     list_node *node = list_ptr[DEREF]->head, *next;
 

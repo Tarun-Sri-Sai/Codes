@@ -15,10 +15,10 @@ typedef struct String_struct
 } String;
 
 String *init(char *val);
-String *create();
+String *new_string();
 void append(String *source, char *appendix);
 void extend(String *source, String *extension);
-void discard(String **source_ptr);
+void delete_string(String **source_ptr);
 void debug_print(String *source);
 void push_back(String *source, char appendix);
 void pop_back(String **source_ptr);
@@ -30,12 +30,12 @@ int min(int a, int b);
 
 String *init(char *val)
 {
-    String *retval = create();
+    String *retval = new_string();
     append(retval, val);
     return retval;
 }
 
-String *create()
+String *new_string()
 {
     String *retval = (String *) malloc(sizeof (String *));
     retval->capacity = 2;
@@ -85,7 +85,7 @@ void extend(String *source, String *extension)
     source->val[source->length] = '\0';
 }
 
-void discard(String **source_ptr)
+void delete_string(String **source_ptr)
 {
     if (source_ptr[DEREF] == NULL)
     {
@@ -133,8 +133,8 @@ void pop_back(String **source_ptr)
     if (source_ptr[DEREF]->length == 0)
     {
         String *temp = source_ptr[DEREF];
-        source_ptr[DEREF] = create();
-        discard(&temp);
+        source_ptr[DEREF] = new_string();
+        delete_string(&temp);
         return;
     }
     source_ptr[DEREF]->val[--source_ptr[DEREF]->length] = '\0';

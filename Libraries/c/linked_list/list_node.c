@@ -4,7 +4,7 @@
 
 #define DEREF 0
 
-list_node *get_new_node(int val)
+list_node *new_node(int val)
 {
     list_node *node = (list_node *)malloc(sizeof(list_node));
     node->val = val;
@@ -13,7 +13,7 @@ list_node *get_new_node(int val)
     return node;
 }
 
-void free_node(list_node **node_ptr) {
+void delete_node(list_node **node_ptr) {
     free(node_ptr[DEREF]);
     node_ptr[DEREF] = NULL;
 }
