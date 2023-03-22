@@ -181,7 +181,7 @@ void string_nextend(String *source, String *extension, int max_size)
     source->val[source->length] = '\0';
 }
 
-int min(int a, int b)
+static int min(int a, int b)
 {
     return a < b ? a : b;
 }

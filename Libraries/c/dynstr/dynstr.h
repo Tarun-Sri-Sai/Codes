@@ -19,6 +19,6 @@ const char *string_value_of(String *source);
 int string_length(String *source);
 void string_nappend(String *source, char *appendix, int max_size);
 void string_nextend(String *source, String *extension, int max_size);
-int min(int a, int b);
+static int min(int a, int b);
 
 #endif
