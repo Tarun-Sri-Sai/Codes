@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "C:/Users/tarun/Documents/Codes/Libraries/c/linked_list/linked_list.h"
+#include <stdlib.h>
+#include "../../c/linked_list/linked_list.h"
 
 int main()
 {
