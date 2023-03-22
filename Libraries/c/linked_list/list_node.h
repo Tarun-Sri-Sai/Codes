@@ -9,6 +9,6 @@ typedef struct list_node_struct
 
 list_node *get_new_node(int val);
 void print_node(list_node *node);
-void free_node(list_node **node);
+void free_node(list_node **node_ptr);
 
 #endif

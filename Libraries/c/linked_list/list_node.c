@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "list_node.h"
 
+#define DEREF 0
+
 list_node *get_new_node(int val)
 {
     list_node *node = (list_node *)malloc(sizeof(list_node));
@@ -11,11 +13,11 @@ list_node *get_new_node(int val)
     return node;
 }
 
-void free_node(list_node **node) {
-    free(*node);
-    (*node) = NULL;
+void free_node(list_node **node_ptr) {
+    free(node_ptr[DEREF]);
+    node_ptr[DEREF] = NULL;
 }
 
 void print_node(list_node *node) {
-    printf_s("{%d, prev = %d, next = %d}", node->val, node->prev->val, node->next->val);
+    printf("{%d, prev = %d, next = %d}", node->val, node->prev->val, node->next->val);
 }

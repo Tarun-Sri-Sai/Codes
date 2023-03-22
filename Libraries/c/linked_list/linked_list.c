@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void push_back(linked_list **list, int val)
+#define DEREF 0
+
+void push_back(linked_list *list, int val)
 {
-    if ((*list) == NULL) {
+    if (list == NULL) {
         return;
     }
-    list_node *tail = (*list)->tail;
+    list_node *tail = list->tail;
     list_node *prev = tail->prev;
     list_node *new_node = get_new_node(val);
 
@@ -17,12 +19,12 @@ void push_back(linked_list **list, int val)
     prev->next = new_node;
 }
 
-void push_front(linked_list **list, int val)
+void push_front(linked_list *list, int val)
 {
-    if ((*list) == NULL) {
+    if (list == NULL) {
         return;
     }
-    list_node *head = (*list)->head;
+    list_node *head = list->head;
     list_node *next = head->next;
     list_node *new_node = get_new_node(val);
 
@@ -32,13 +34,13 @@ void push_front(linked_list **list, int val)
     next->prev = new_node;
 }
 
-void pop_back(linked_list **list)
+void pop_back(linked_list *list)
 {
-    if ((*list) == NULL) {
+    if (list == NULL) {
         return;
     }
-    list_node *head = (*list)->head;
-    list_node *tail = (*list)->tail;
+    list_node *head = list->head;
+    list_node *tail = list->tail;
 
     if (head->next == tail) {
         return;
@@ -51,13 +53,13 @@ void pop_back(linked_list **list)
     free_node(&deleted_node);
 }
 
-void pop_front(linked_list **list)
+void pop_front(linked_list *list)
 {
-    if ((*list) == NULL) {
+    if (list == NULL) {
         return;
     }
-    list_node *head = (*list)->head;
-    list_node *tail = (*list)->tail;
+    list_node *head = list->head;
+    list_node *tail = list->tail;
 
     if (head->next == tail) {
         return;
@@ -70,16 +72,16 @@ void pop_front(linked_list **list)
     free_node(&deleted_node);
 }
 
-void free_list(linked_list **list)
+void free_list(linked_list **list_ptr)
 {
-    list_node *node = (*list)->head, *next;
+    list_node *node = list_ptr[DEREF]->head, *next;
 
     for (next = node->next; next != NULL; node = next) {
         next = node->next;
         free_node(&node);
     }
-    free_node(&((*list)->tail));
-    (*list) = NULL;
+    free_node(&(list_ptr[DEREF]->tail));
+    list_ptr[DEREF] = NULL;
 }
 
 linked_list *get_new_list()
