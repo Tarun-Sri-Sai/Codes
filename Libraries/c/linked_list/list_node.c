@@ -13,11 +13,13 @@ list_node *new_node(int val)
     return node;
 }
 
-void delete_node(list_node **node_ptr) {
+void delete_node(list_node **node_ptr)
+{
     free(node_ptr[DEREF]);
     node_ptr[DEREF] = NULL;
 }
 
-void print_node(list_node *node) {
+void print_node(list_node *node)
+{
     printf("{%d, prev = %d, next = %d}", node->val, node->prev->val, node->next->val);
 }
