@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WRAP_TEXT_FILE_H
+#define WRAP_TEXT_FILE_H
 
 #include <stdio.h>
 #include <string.h>
@@ -36,3 +37,5 @@ int wrap_text_file(FILE *input, int max_line_size, FILE *output)
     fprintf(output, "\n");
     return word_count;
 }
+
+#endif
