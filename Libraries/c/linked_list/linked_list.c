@@ -101,9 +101,9 @@ void print_list(linked_list *list) {
     }
     list_node *head = list->head, *ptr, *tail = list->tail;
 
-    printf_s("[");
+    printf("[");
     for (ptr = head->next; ptr != tail; ptr = ptr->next) {
-        printf_s("%d%s", ptr->val, (ptr->next != tail ? " -> " : ""));
+        printf("%d%s", ptr->val, (ptr->next != tail ? " -> " : ""));
     }
-    printf_s("]\n");
+    printf("]\n");
 }
