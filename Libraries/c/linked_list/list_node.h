@@ -8,7 +8,7 @@ typedef struct list_node_struct
 } list_node;
 
 list_node *new_node(int val);
-void print_node(list_node *node);
+void node_debug_print(list_node *node);
 void delete_node(list_node **node_ptr);
 
 #endif

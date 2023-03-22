@@ -102,7 +102,7 @@ linked_list *new_list()
     return list;
 }
 
-void print_list(linked_list *list)
+void list_debug_print(linked_list *list)
 {
     if (list == NULL)
     {

@@ -19,7 +19,7 @@ void delete_node(list_node **node_ptr)
     node_ptr[DEREF] = NULL;
 }
 
-void print_node(list_node *node)
+void node_debug_print(list_node *node)
 {
     printf("{%d, prev = %d, next = %d}", node->val, node->prev->val, node->next->val);
 }

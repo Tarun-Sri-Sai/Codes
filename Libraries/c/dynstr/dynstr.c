@@ -123,7 +123,7 @@ void string_pop_back(String **source_ptr)
     }
 }
 
-const char *to_string(String *source)
+const char *string_value_of(String *source)
 {
     if (source == NULL)
     {

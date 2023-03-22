@@ -15,6 +15,6 @@ void list_push_front(linked_list *list, int val);
 void list_pop_back(linked_list *list);
 void list_pop_front(linked_list *list);
 void delete_list(linked_list **list_ptr);
-void print_list(linked_list *list);
+void list_debug_print(linked_list *list);
 
 #endif
