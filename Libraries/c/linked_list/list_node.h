@@ -7,7 +7,7 @@ typedef struct list_node_struct
     struct list_node_struct *next, *prev;
 } list_node;
 
-list_node *get_new_node();
+list_node *get_new_node(int val);
 void print_node(list_node *node);
 void free_node(list_node **node);
 
