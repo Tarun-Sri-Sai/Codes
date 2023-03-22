@@ -14,4 +14,4 @@ obj/%.o: %.c
 	${CC} ${CPPFLAGS} -c $^ -o $@
 
 clean:
-	del /F /Q obj\\*.o
+	del /F /Q obj\\*.o output\\*.exe
