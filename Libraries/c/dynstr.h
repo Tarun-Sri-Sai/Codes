@@ -8,7 +8,7 @@
 #define MAX_STRING 0xFFFF
 #define DEREF 0
 
-typedef struct String_tag
+typedef struct String_struct
 {
     char *val;
     int length, capacity;
