@@ -7,7 +7,6 @@
 
 #define MAX_STRING 0xFFFF
 #define DEREF 0
-#define STR_NULL_PTR ((String *) 0)
 
 typedef struct String_tag
 {
@@ -38,17 +37,17 @@ String *init(char *val)
 
 String *create()
 {
-    String *retval = (String *)malloc(sizeof(String *));
+    String *retval = (String *) malloc(sizeof (String *));
     retval->capacity = 2;
     retval->length = 0;
-    retval->val = (char *)calloc(retval->capacity + 1, sizeof(char));
+    retval->val = (char *) calloc(retval->capacity + 1, sizeof (char));
     retval->val[retval->length] = '\0';
     return retval;
 }
 
 void append(String **source_ptr, char *appendix)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL)
     {
         return;
     }
@@ -56,10 +55,10 @@ void append(String **source_ptr, char *appendix)
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
-        if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
+        if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
         {
             source_ptr[DEREF]->capacity *= 2;
-            source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
+            source_ptr[DEREF]->val = (char *) realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
         }
         source_ptr[DEREF]->val[source_ptr[DEREF]->length++] = t;
     }
@@ -68,7 +67,7 @@ void append(String **source_ptr, char *appendix)
 
 void extend(String **source_ptr, String **extension_ptr)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR) || extension_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL || extension_ptr[DEREF] == NULL)
     {
         return;
     }
@@ -76,10 +75,10 @@ void extend(String **source_ptr, String **extension_ptr)
     for (i = 0; i < length; ++i)
     {
         char t = extension_ptr[DEREF]->val[i];
-        if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
+        if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
         {
             source_ptr[DEREF]->capacity *= 2;
-            source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
+            source_ptr[DEREF]->val = (char *) realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
         }
         source_ptr[DEREF]->val[source_ptr[DEREF]->length++] = t;
     }
@@ -88,18 +87,18 @@ void extend(String **source_ptr, String **extension_ptr)
 
 void discard(String **source_ptr)
 {
-    if (*source_ptr == (STR_NULL_PTR))
+    if (*source_ptr == NULL)
     {
         return;
     }
     free(source_ptr[DEREF]->val);
     free(source_ptr[DEREF]);
-    *source_ptr = (STR_NULL_PTR);
+    *source_ptr = NULL;
 }
 
 void debug_print(String **source_ptr)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL)
     {
         return;
     }
@@ -108,7 +107,7 @@ void debug_print(String **source_ptr)
 
 void push_back(String **source_ptr, char appendix)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL)
     {
         return;
     }
@@ -116,10 +115,10 @@ void push_back(String **source_ptr, char appendix)
     {
         return;
     }
-    if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
+    if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
     {
         source_ptr[DEREF]->capacity *= 2;
-        source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
+        source_ptr[DEREF]->val = (char *) realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
     }
     source_ptr[DEREF]->val[source_ptr[DEREF]->length++] = appendix;
     source_ptr[DEREF]->val[source_ptr[DEREF]->length] = '\0';
@@ -127,7 +126,7 @@ void push_back(String **source_ptr, char appendix)
 
 void pop_back(String **source_ptr)
 {
-    if (*source_ptr == (STR_NULL_PTR))
+    if (*source_ptr == NULL)
     {
         return;
     }
@@ -139,25 +138,25 @@ void pop_back(String **source_ptr)
         return;
     }
     source_ptr[DEREF]->val[--source_ptr[DEREF]->length] = '\0';
-    if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity < 0.25 && source_ptr[DEREF]->capacity > 2)
+    if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity < 0.25 && source_ptr[DEREF]->capacity > 2)
     {
         source_ptr[DEREF]->capacity /= 2;
-        source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
+        source_ptr[DEREF]->val = (char *) realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
     }
 }
 
 const char *to_string(String **source_ptr)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL)
     {
-        return ((char *)0);
+        return NULL;
     }
     return source_ptr[DEREF]->val;
 }
 
 int length(String **source_ptr)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL)
     {
         return 0;
     }
@@ -166,7 +165,7 @@ int length(String **source_ptr)
 
 void nappend(String **source_ptr, char *appendix, int max_size)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL)
     {
         return;
     }
@@ -174,10 +173,10 @@ void nappend(String **source_ptr, char *appendix, int max_size)
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
-        if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
+        if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
         {
             source_ptr[DEREF]->capacity *= 2;
-            source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
+            source_ptr[DEREF]->val = (char *) realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
         }
         source_ptr[DEREF]->val[source_ptr[DEREF]->length++] = t;
     }
@@ -186,7 +185,7 @@ void nappend(String **source_ptr, char *appendix, int max_size)
 
 void nextend(String **source_ptr, String **extension_ptr, int max_size)
 {
-    if (source_ptr[DEREF] == (STR_NULL_PTR) || extension_ptr[DEREF] == (STR_NULL_PTR))
+    if (source_ptr[DEREF] == NULL || extension_ptr[DEREF] == NULL)
     {
         return;
     }
@@ -194,10 +193,10 @@ void nextend(String **source_ptr, String **extension_ptr, int max_size)
     for (i = 0; i < length; ++i)
     {
         char t = extension_ptr[DEREF]->val[i];
-        if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
+        if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity > 0.75)
         {
             source_ptr[DEREF]->capacity *= 2;
-            source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
+            source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
         }
         source_ptr[DEREF]->val[source_ptr[DEREF]->length++] = t;
     }
