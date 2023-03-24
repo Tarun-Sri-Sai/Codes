@@ -111,8 +111,6 @@ char *make_string(char ch, int repetition)
 
 void debug_corruption(byte *target, byte *source, int length)
 {
-    assert(target[length] == (byte)'\0' && source[length] == (byte)'\0');
-
     int i;
     byte *diff_string;
     
@@ -126,6 +124,7 @@ void debug_corruption(byte *target, byte *source, int length)
     for (i = 0; i < length; i++)
     {
         byte diff = (byte)abs_diff(source[i], target[i]);
+        
         diff_string[i] = diff;
     }
 
@@ -137,15 +136,16 @@ void debug_corruption(byte *target, byte *source, int length)
 bool is_corrupt(byte *target, byte *source, int length)
 {
     byte check_sum1 = (byte)0, check_sum2;
+    int i;
 
-    for (int i = 0; i < length; i++)
+    for (i = 0; i < length; i++)
     {
         check_sum1 += source[i];
     }
     check_sum1 = -check_sum1;
 
     check_sum2 = check_sum1;
-    for (int i = 0; i < length; i++)
+    for (i = 0; i < length; i++)
     {
         check_sum2 += target[i];
     }
