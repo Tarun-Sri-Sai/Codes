@@ -26,9 +26,9 @@ int main(int argc, char **argv)
     byte *input, *corrupted;
     int input_length;
 
-    if (argc != 2)
+    if (argc != 3)
     {
-        printf("Usage: <bin> \"<data string>\"");
+        printf("Usage: <bin> \"<data string>\" <number of bits to corrupt>\n");
         return EXIT_FAILURE;
     }
 
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     input_length = strnlen((char *)input, MAX_STRING);
 
     corrupted = corrupt_string(copy_string(input, input_length),
-                               input_length, 1);
+                               input_length, atoi(argv[2]));
 
     debug_corruption(corrupted, input, input_length);
 
