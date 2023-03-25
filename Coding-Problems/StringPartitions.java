@@ -10,7 +10,7 @@ public class StringPartitions {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         String[] inp = br.readLine().split(" ");
         String s = br.readLine();
-        if (isChopChop(s, inp, 0)) {
+        if (hasPartitions(s, inp, 0)) {
             bw.write("YES\n");
         } else {
             bw.write("NO\n");
@@ -18,12 +18,12 @@ public class StringPartitions {
         bw.flush();
     }
 
-    private static boolean isChopChop(String s, String[] inp, int idx) {
+    private static boolean hasPartitions(String s, String[] inp, int idx) {
         if (idx == s.length()) {
             return true;
         }
         for (int i = idx; i < s.length(); i++) {
-            if (isInArray(s.substring(idx, i + 1), inp) && isChopChop(s, inp, i + 1)) {
+            if (isInArray(s.substring(idx, i + 1), inp) && hasPartitions(s, inp, i + 1)) {
                 return true;
             }
         }
