@@ -16,13 +16,15 @@ public class AnimeHours {
         BufferedWriter fileOut = new BufferedWriter(new FileWriter(outputPath));
         String line = null;
         float sum = 0;
-        boolean print = false;
+        boolean switchToHours = false;
+
         while ((line = fileIn.readLine()) != null) {
             line = line.trim();
-            if (line.contains("Coming up:")) {
-                print = true;
+            if (line.contains("Finished:")) {
+                switchToHours = true;
             }
             String[] words = line.split(" ");
+
             if (line.contains("Total watchtime:")) {
                 continue;
             }
@@ -31,6 +33,7 @@ public class AnimeHours {
                     if (words[i].matches("\\d+") && i == words.length - 1) {
                         StringBuilder sb = new StringBuilder("(");
                         float val = Float.parseFloat(words[i]) / 3F;
+
                         sum += val;
                         System.err.println("Added value: " + val + " for " + line);
                         sb.append(String.format("%.2f", val));
@@ -38,17 +41,19 @@ public class AnimeHours {
                         words[i] = sb.toString();
                     }
                 }
-                if (!print) {
+                if (!switchToHours) {
                     fileOut.write(line + "\n");
                     continue;
                 }
                 StringBuilder sb = new StringBuilder();
+
                 for (int i = 0; i < words.length; ++i) {
                     sb.append(words[i] + (i < words.length - 1 ? " " : ""));
                 }
                 fileOut.write(sb.toString() + "\n");
             } else {
                 float val = Float.parseFloat(words[words.length - 2].substring(1));
+                
                 sum += val;
                 System.err.println("Added value: " + val + " for " + line);
                 fileOut.write(line + "\n");
