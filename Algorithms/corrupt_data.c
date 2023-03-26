@@ -13,22 +13,23 @@
 #define min(a, b) (a < b ? a : b)
 #define abs_diff(x, y) (x > y ? x - y : y - x)
 
-byte *corrupt_string(byte *string, int length, int bits);
+byte *corrupt_string(byte *string, int length, int bits, int chance);
 void print_string(byte *string, int length);
 byte *copy_string(byte *string, int length);
 char *make_string(char ch, int repetition);
 void debug_corruption(byte *target, byte *source, int length);
 bool is_corrupt(byte *target, byte *source, int length);
-
+int get_prob(int probability);
 
 int main(int argc, char **argv)
 {
     byte *input, *corrupted;
     int input_length;
 
-    if (argc != 3)
+    if (argc != 4)
     {
-        printf("Usage: <bin> \"<data string>\" <number of bits to corrupt>\n");
+        printf("Usage\t\t: %s\t\"<data string>\"\t<bits to corrupt>\t<corrupt chance>\n", argv[0]);
+        printf("Example command\t: %s\t%s\t\t%d\t\t\t%d\n", argv[0], "Example", 4, 50);
         return EXIT_FAILURE;
     }
 
@@ -38,7 +39,7 @@ int main(int argc, char **argv)
     input_length = strnlen((char *)input, MAX_STRING);
 
     corrupted = corrupt_string(copy_string(input, input_length),
-                               input_length, atoi(argv[2]));
+                               input_length, atoi(argv[2]), atoi(argv[3]));
 
     debug_corruption(corrupted, input, input_length);
 
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-byte *corrupt_string(byte *string, int length, int bits)
+byte *corrupt_string(byte *string, int length, int bits, int chance)
 {
     int i;
 
@@ -59,7 +60,7 @@ byte *corrupt_string(byte *string, int length, int bits)
         int index = rand() % length;
         int bit_pos = rand() % BYTE_SIZE;
 
-        if (rand() % 2 == 0)
+        if (get_prob(chance) == 0)
         {
             continue;
         }
@@ -151,4 +152,12 @@ bool is_corrupt(byte *target, byte *source, int length)
     }
 
     return (check_sum2 != 0);
+}
+
+int get_prob(int probability)
+{
+    if (!(0 <= probability && probability <= 100)) {
+        return 0;
+    }
+    return ((rand() % 100) < probability ? 1 : 0);
 }
