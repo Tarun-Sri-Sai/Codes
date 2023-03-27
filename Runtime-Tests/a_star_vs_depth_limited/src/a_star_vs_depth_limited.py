@@ -142,7 +142,7 @@ def get_adjacency_list():
 
             print("{", end="")
             for i, (neighbor, weight) in enumerate(adjacency_list[vertex].items()):
-                print(f"{neighbor}: {weight:2d}", end="")
+                print(f"{neighbor}: {weight:3d}", end="")
                 if i == i_max:
                     print("}")
                 else:
@@ -206,7 +206,7 @@ def get_heuristics(adjacency_list, end_vertex):
     print("\nHeuristics:\t", end="")
     time.sleep(ONE_FIFTH_SEC)
     for i, vertex in enumerate(vertices):
-        print(f"({vertex}: ", f"{heuristics[vertex]:2d})" if heuristics[vertex] < INF else "IN)", sep="", end="")
+        print(f"({vertex}: ", f"{heuristics[vertex]:3d})" if heuristics[vertex] < INF else "INF)", sep="", end="")
         if (i + 1) % 7 != 0 and i < len(vertices) - 1:
             print(", ", end="")
         else:
