@@ -1,6 +1,7 @@
 import random
 import sys
 import time
+import os
 
 
 sys.setrecursionlimit(int(1e8))
@@ -157,6 +158,78 @@ def get_adjacency_list():
     return adjacency_list
 
 
+def get_adjacency_list_from_file(file_in):
+    print("Enter number of vertices: ", end="")
+    sys.stdout.flush()
+    n_vertices = int(file_in.readline().strip())
+
+    if n_vertices > 26:
+        return
+
+    vertices = [chr(i + 65) for i in range(n_vertices)]
+    print(f"Vertices: {vertices}\n")
+
+    adjacency_list = {}
+
+    print("How do you want your graph:\n\t1. Randomly generated\n\t2. Custom input")
+    print("\nEnter your Choice: ", end="")
+    sys.stdout.flush()
+    choice = int(file_in.readline().strip())
+
+    if choice == 1:
+        for vertex in vertices:
+            adjacency_list[vertex] = {}
+
+            for _ in range(random.randint(0, n_vertices - 1)):
+                curr_vertex = vertices[random.randint(0, n_vertices - 1)]
+
+                while curr_vertex == vertex or curr_vertex in adjacency_list[vertex]:
+                    curr_vertex = vertices[random.randint(0, n_vertices - 1)]
+
+                adjacency_list[vertex][curr_vertex] = random.randint(1, 99)
+
+    else:
+        print("\nEnter the adjacency list", end=" ")
+        print("format: \"vertex_name,weight\" pairs separated by space, \"None\" for empty list):")
+
+        for vertex in vertices:
+            print(f"For {vertex}: ", end="")
+            sys.stdout.flush()
+            line = file_in.readline().strip()
+
+            adjacency_list[vertex] = {}
+
+            if line != "None":
+                pairs = line.split()
+
+                for pair in pairs:
+                    comma_sep_fields = pair.split(sep=",")
+                    adjacency_list[vertex][comma_sep_fields[0]] = int(comma_sep_fields[1])
+
+    print("\nGraph:")
+    time.sleep(ONE_HUNDREDTH_SEC)
+    for vertex in vertices: 
+        print(f"{vertex}: ", end="")
+        if adjacency_list[vertex]:
+            i_max = len(adjacency_list[vertex]) - 1
+
+            print("{", end="")
+            for i, (neighbor, weight) in enumerate(adjacency_list[vertex].items()):
+                print(f"{neighbor}: {weight:3d}", end="")
+                if i == i_max:
+                    print("}")
+                else:
+                    print(", ", end="")
+                    
+                sys.stdout.flush()
+        else:
+            print("{}")
+
+    print()
+
+    return adjacency_list
+
+
 def find_dist(adjacency_list, start, end):
     queue = [start]
     visited = set(start)
@@ -217,14 +290,71 @@ def get_heuristics(adjacency_list, end_vertex):
     return heuristics
 
 
+def get_heuristics_from_file(adjacency_list, end_vertex, file_in):
+    print("\nHow do you want your heuristics:\n\t1. Calculated\n\t2. Custom input")
+    print("\nEnter your Choice: ", end="")
+    sys.stdout.flush()
+    choice = int(file_in.readline().strip())
+
+    vertices = [key for key in adjacency_list]
+
+    heuristics = {}
+
+    if choice == 1:
+        for vertex in vertices:
+            if vertex == end_vertex:
+                heuristics[vertex] = 0
+            else:    
+                heuristics[vertex] = find_heuristic(adjacency_list, vertex, end_vertex)
+
+    else:
+        for vertex in vertices:
+            print(f"Enter heuristic for {vertex}: ", end="")
+            sys.stdout.flush()
+            heuristics[vertex] = int(file_in.readline().strip())
+
+    print("\nHeuristics:\t", end="")
+    time.sleep(ONE_FIFTH_SEC)
+    for i, vertex in enumerate(vertices):
+        print(f"({vertex}: ", f"{heuristics[vertex]:3d})" if heuristics[vertex] < INF else "INF)", sep="", end="")
+        if (i + 1) % 7 != 0 and i < len(vertices) - 1:
+            print(", ", end="")
+        else:
+            print("\n\t\t", end="")
+        sys.stdout.flush()
+        time.sleep(ONE_FIFTH_SEC)
+        
+    return heuristics
+
+
 def main():
-    adjacency_list = get_adjacency_list()
+    print("How do you want your input:\n\t1. Stdin\n\t2. File path")
+    choice = int(input("\nEnter your choice: "))
+    if choice == 1:
+        adjacency_list = get_adjacency_list()
 
-    start = input("Enter starting node: ")
-    end = input("Enter destination node: ")
-    depth = int(input("Enter depth for depth limited search: "))
+        start = input("Enter starting node: ")
+        end = input("Enter destination node: ")
+        depth = int(input("Enter depth for depth limited search: "))
 
-    heuristics = get_heuristics(adjacency_list, end)
+        heuristics = get_heuristics(adjacency_list, end)
+    
+    else:
+        print("\n", os.getcwd(), sep="")
+        with open(input("\nEnter file path: "), "r") as file_in:
+            adjacency_list = get_adjacency_list_from_file(file_in)
+
+            print("Enter starting node: ", end="")
+            sys.stdout.flush()
+            start = file_in.readline().strip()
+            print("Enter destination node: ", end="")
+            sys.stdout.flush()
+            end = file_in.readline().strip()
+            print("Enter depth for depth limited search: ", end="")
+            sys.stdout.flush()
+            depth = int(file_in.readline().strip())
+
+            heuristics = get_heuristics_from_file(adjacency_list, end, file_in)
 
     graph = Graph(adjacency_list, heuristics)
 
