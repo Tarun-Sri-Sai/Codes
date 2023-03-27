@@ -149,10 +149,8 @@ def get_adjacency_list():
                     print(", ", end="")
                     
                 sys.stdout.flush()
-                time.sleep(ONE_HUNDREDTH_SEC)
         else:
             print("{}")
-        time.sleep(ONE_HUNDREDTH_SEC)
 
     print()
 
