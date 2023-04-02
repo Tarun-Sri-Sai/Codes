@@ -3,11 +3,18 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class ClearMultipleSpaces {
     public static void main(String[] args) throws IOException {
-        String inputFile = "Text Files/InputTest.txt";
-        String outputFile = "Text Files/Output.txt";
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("Current directory\t: " + System.getProperty("user.dir"));
+        System.out.print("Input file path\t\t: ");
+        String inputFile = stdIn.readLine().trim();
+
+        System.out.print("Output file path\t: ");
+        String outputFile = stdIn.readLine().trim();
         BufferedReader fileIn = new BufferedReader(new FileReader(inputFile));
         BufferedWriter fileOut = new BufferedWriter(new FileWriter(outputFile));
         String line = fileIn.readLine();
