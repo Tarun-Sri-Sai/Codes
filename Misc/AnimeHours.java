@@ -11,7 +11,8 @@ public class AnimeHours {
     private static BufferedReader stdIn;
     public static void main(String[] args) throws IOException {
         stdIn = new BufferedReader(new InputStreamReader(System.in));
-        final String inputPath = stdIn.readLine(), outputPath = stdIn.readLine();
+        System.out.println("Current directory: " + System.getProperty("user.dir"));
+        final String inputPath = stdIn.readLine().trim(), outputPath = stdIn.readLine().trim();
         BufferedReader fileIn = new BufferedReader(new FileReader(inputPath));
         BufferedWriter fileOut = new BufferedWriter(new FileWriter(outputPath));
         String line = null;
