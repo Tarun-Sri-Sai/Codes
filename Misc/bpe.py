@@ -8,18 +8,9 @@ def process_corpus(corpus: List[str]):
     word_lengths: List[int] = []
     for line in corpus:
         word_lengths.extend([len(word) for word in line.split()])
-    vocab, tokens = bpe(corpus, 100)
-    max_length: int = 2 * max(word_lengths) + 5
-    print("\nFinal vocabulary:")
-    for pair in sorted(vocab.items()):
-        print(padding(pair[0], max_length), ": ", pair[1], sep="")
 
+    _, tokens = bpe(corpus, 100)
     print("\nTokens:", *sorted(tokens), sep="\n")
-
-
-def padding(string: str, max_length: int):
-    padding_length: int = max_length - len(string)
-    return string + (" " * padding_length)
 
 
 def tokenize(vocab: Dict[str, int]) -> List[str]:
@@ -84,7 +75,6 @@ def bpe(corpus: List[str], iterations: int) -> Tuple[Dict[str, int], List[str]]:
 
 def main():
     input_path: str = input(f"Enter file path(Cwd {os.getcwd()}): ")
-    # path: str = "Text Files/Input.txt"
     with open(input_path, "r") as file_in:
         process_corpus(file_in.readlines())
 
