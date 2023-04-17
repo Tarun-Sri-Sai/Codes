@@ -1,6 +1,7 @@
 import os
 from typing import List, Dict, Tuple, Set
 from collections import defaultdict
+import time
 
 
 def process_corpus(corpus: List[str]):
@@ -9,7 +10,11 @@ def process_corpus(corpus: List[str]):
     for line in corpus:
         word_lengths.extend([len(word) for word in line.split()])
 
-    _, tokens = bpe(corpus, int(input("Iterations: ")))
+    iterations = int(input("Iterations: "))
+    start_time: float = time.perf_counter()
+    _, tokens = bpe(corpus, iterations)
+    end_time: float = time.perf_counter()
+    print(f"Time taken: {(end_time - start_time):.2f} seconds")
     with open(input("Token file path: "), "w") as token_out:
         token_out.write("Tokens:\n")
         for token in sorted(tokens):
