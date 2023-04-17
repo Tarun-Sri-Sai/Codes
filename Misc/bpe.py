@@ -9,8 +9,11 @@ def process_corpus(corpus: List[str]):
     for line in corpus:
         word_lengths.extend([len(word) for word in line.split()])
 
-    _, tokens = bpe(corpus, 100)
-    print("\nTokens:", *sorted(tokens), sep="\n")
+    _, tokens = bpe(corpus, int(input("Iterations: ")))
+    with open(input("Token file path: "), "w") as token_out:
+        token_out.write("Tokens:\n")
+        for token in sorted(tokens):
+            token_out.write(token + "\n")
 
 
 def tokenize(vocab: Dict[str, int]) -> List[str]:
@@ -74,7 +77,8 @@ def bpe(corpus: List[str], iterations: int) -> Tuple[Dict[str, int], List[str]]:
 
 
 def main():
-    input_path: str = input(f"Enter file path(Cwd {os.getcwd()}): ")
+    print(f"Cwd: {os.getcwd()}")
+    input_path: str = input("Corpus file path: ")
     with open(input_path, "r") as file_in:
         process_corpus(file_in.readlines())
 
