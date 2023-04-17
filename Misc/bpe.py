@@ -22,11 +22,11 @@ def process_corpus(corpus: List[str]):
 
 
 def tokenize(vocab: Dict[str, int]) -> List[str]:
-    tokens: Set[str] = []
+    tokens: List[str] = []
     for token_seq in vocab:
         tokens.extend(token for token in token_seq.split())
 
-    tokens: List[str] = list(set(tokens))
+    tokens = list(set(tokens))
     return tokens
 
 
