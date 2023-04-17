@@ -15,7 +15,10 @@ def process_corpus(corpus: List[str]):
     _, tokens = bpe(corpus, iterations)
     end_time: float = time.perf_counter()
     print(f"Time taken: {(end_time - start_time):.2f} seconds")
-    with open(input("Token file path: "), "w") as token_out:
+    output_path = input("Token file path: ")
+    if output_path == "":
+        return
+    with open(output_path, "w") as token_out:
         token_out.write("Tokens:\n")
         for token in sorted(tokens):
             token_out.write(token + "\n")
@@ -33,13 +36,12 @@ def tokenize(vocab: Dict[str, int]) -> List[str]:
 def get_vocab(corpus: List[str]) -> Dict[str, int]:
     vocab: defaultdict[str, int] = defaultdict(int)
     for sentence in corpus:
-        for word in sentence.split():
-            token: str = ""
-            for char in word:
-                token += (char + " ")
+        token: str = ""
+        for char in sentence:
+            token += (char + "</s>")
 
-            token += ("</w>" + " ")
-            vocab[token] += 1
+        token += ("</w>")
+        vocab[token] += 1
 
     vocab: Dict[str, int] = dict(vocab)
     return vocab
@@ -48,7 +50,7 @@ def get_vocab(corpus: List[str]) -> Dict[str, int]:
 def get_pairs(vocab: Dict[str, int]) -> Dict[Tuple[str, str], int]:
     pairs: defaultdict[Tuple[str, str], int] = defaultdict(int)
     for token_seq, freq in vocab.items():
-        tokens = token_seq.strip().split()
+        tokens = token_seq.strip().split("</s>")
         length = len(tokens)
         for i in range(length - 1):
             pairs[(tokens[i], tokens[i + 1])] += freq
@@ -62,7 +64,7 @@ def merge_vocab(vocab_in: Dict[str, int], pair: Tuple[str, str]) -> Dict[str, in
         return vocab_in
 
     vocab_out: Dict[str, int] = {}
-    bigram: str = " ".join(pair)
+    bigram: str = "</s>".join(pair)
     for token_in in vocab_in:
         token_out = token_in.replace(bigram, "".join(pair))
         vocab_out[token_out] = vocab_in[token_in]
