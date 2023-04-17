@@ -21,7 +21,7 @@ def process_corpus(corpus: List[str]):
     with open(output_path, "w") as token_out:
         token_out.write("Tokens:\n")
         for token in sorted(tokens):
-            token_out.write(token + "\n")
+            token_out.write(token.replace("</t>", "_") + "\n")
 
 
 def tokenize(vocab: Dict[str, int]) -> List[str]:
@@ -38,9 +38,9 @@ def get_vocab(corpus: List[str]) -> Dict[str, int]:
     for sentence in corpus:
         token: str = ""
         for char in sentence:
-            token += (char + "</s>")
+            token += (char + "</t>")
 
-        token += ("</w>")
+        token += ("</s>")
         vocab[token] += 1
 
     vocab: Dict[str, int] = dict(vocab)
@@ -50,7 +50,7 @@ def get_vocab(corpus: List[str]) -> Dict[str, int]:
 def get_pairs(vocab: Dict[str, int]) -> Dict[Tuple[str, str], int]:
     pairs: defaultdict[Tuple[str, str], int] = defaultdict(int)
     for token_seq, freq in vocab.items():
-        tokens = token_seq.strip().split("</s>")
+        tokens = token_seq.strip().split("</t>")
         length = len(tokens)
         for i in range(length - 1):
             pairs[(tokens[i], tokens[i + 1])] += freq
@@ -64,7 +64,7 @@ def merge_vocab(vocab_in: Dict[str, int], pair: Tuple[str, str]) -> Dict[str, in
         return vocab_in
 
     vocab_out: Dict[str, int] = {}
-    bigram: str = "</s>".join(pair)
+    bigram: str = "</t>".join(pair)
     for token_in in vocab_in:
         token_out = token_in.replace(bigram, "".join(pair))
         vocab_out[token_out] = vocab_in[token_in]
