@@ -17,5 +17,6 @@ def main() -> None:
             for token in bpe(c_in.readlines(), iterations):
                 t_out.write(token + "\n")
 
+
 if __name__ == "__main__":
     main()
