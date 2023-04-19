@@ -1,26 +1,27 @@
 import json
 import os
 import re
-from typing import List, Dict, Tuple, DefaultDict
-from collections import defaultdict
+from typing import List, Dict, Tuple
+from collections import  Counter
+from itertools import tee
+import time
 
 
 class BPE:
-
-    def __init__(self, corpus: List[str], iterations: int) -> None:
-        self.vocab_json_path: str = "json/vocab.json"
+    def __init__(self, corpus: List[str], vocab_path: str, iterations: int) -> None:
+        self.vocab_json_path: str = vocab_path
         self.vocab: Dict[str, int] = {}
-        with open(self.vocab_json_path, "r") as vocab_reader:
-            try:
+        try:
+            with open(self.vocab_json_path, "r") as vocab_reader:
                 self.vocab = json.load(vocab_reader)
-            except json.decoder.JSONDecodeError:
-                pass
+        except (json.decoder.JSONDecodeError, FileNotFoundError):
+            pass
 
         for sentence in corpus:
             sentence = re.sub("[ ]+", "_", sentence.strip())
             sentence += "^"
             key = self.characterize_tokens(sentence)
-            self.vocab[key] = 1 if key not in self.vocab else self.vocab[key] + 1
+            self.vocab[key] = self.vocab.get(key, 0) + 1
 
         print()
         for i in range(iterations):
@@ -38,15 +39,19 @@ class BPE:
     def get_tokens(self) -> List[str]:
         tokens: List[str] = []
         for token_seq in self.vocab:
-            tokens.extend(token for token in token_seq.split())
+            tokens.extend(token_seq.split())
         return list(set(tokens))
-    
+
+    def pairwise(self, iterable):
+        a, b = tee(iterable)
+        next(b, None)
+        return zip(a, b)
+
     def rank_pairs(self) -> None:
-        pairs: DefaultDict[Tuple[str, str], int] = defaultdict(int)
-        for token_seq, freq in self.vocab.items():
+        pairs: Counter = Counter()
+        for token_seq in self.vocab:
             tokens = token_seq.split()
-            for i in range(0, len(tokens) - 1):
-                pairs[tokens[i], tokens[i + 1]] += freq
+            pairs.update(self.pairwise(tokens))
 
         self.pairs: Dict[Tuple[str, str], int] = dict(pairs)
 
@@ -63,13 +68,18 @@ class BPE:
 
 def main() -> None:
     print(f"CWD: {os.getcwd()}")
-    corpus_path: str = input("Corpus path: ")
+    corpus_path: str = input("Corpus .txt path: ")
+    vocab_path: str = input("Vocab .json path: ")
     iterations: int = int(input("Iterations: "))
-    tokens_path: str = input("Tokens path: ")
+    tokens_path: str = input("Tokens .txt path: ")
     with open(tokens_path, "w") as t_out:
         with open(corpus_path, "r") as c_in:
-            bpe = BPE(c_in.readlines(), iterations)
-            for token in bpe.get_tokens():
+            start_time = time.perf_counter()
+            bpe = BPE(c_in.readlines(), vocab_path, iterations)
+            tokens = bpe.get_tokens()
+            end_time = time.perf_counter()
+            print(f"Time taken: {end_time - start_time:.3f} seconds")
+            for token in tokens:
                 t_out.write(token + "\n")
 
 
