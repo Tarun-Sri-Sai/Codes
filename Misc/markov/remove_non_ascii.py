@@ -1,9 +1,12 @@
 from string import printable
+from os import getcwd
 
 
 def main():
-    with open("txt/ice_and_fire_ascii.txt", "w") as f_write:
-        with open("txt/ice_and_fire.txt", "r", encoding="utf-8") as f_read:
+    print(f"Current directory: {getcwd()}")
+    file_path = input("File path: ")
+    with open("".join([file_path[:-4], "_ascii.txt"]), "w") as f_write:
+        with open(file_path, "r", encoding="utf-8") as f_read:
             f_write.write(
                 "".join(filter(lambda ch: ch in printable, f_read.read())))
 
