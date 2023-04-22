@@ -1,5 +1,6 @@
 from numpy import random, array
 from json import load, dump
+from time import perf_counter
 
 
 def split_sentence(sen):
@@ -77,18 +78,20 @@ def to_str(tuple):
 
 
 def main():
-    cache = get_cache("json/cache.json")
     corpus_path = "txt/ice_and_fire_ascii.txt"
     # corpus_path = input("Corpus path: ")
     k = 4
-    # k = int(input("Enter k: "))
-    if corpus_path in cache and k in cache[corpus_path]:
-        cached_data = cache[corpus_path][k]
+    # k = int(input("k value: "))
+    start_time = perf_counter()
+    cache = get_cache("json/cache.json")
+    if corpus_path in cache and str(k) in cache[corpus_path]:
+        print("Reading from cache...")
+        cached_data = cache[corpus_path][str(k)]
         k_seqs = cached_data["k_seqs"]
         k_seq_counts = cached_data["k_seq_counts"]
         matrix = cached_data["matrix"]
-
     else:
+        print("Writing into cache...")
         corpus = ""
         with open(corpus_path, "r") as f:
             corpus += f.read()
@@ -122,6 +125,8 @@ def main():
         with open("json/cache.json", "w") as c_write:
             dump(cache, c_write)
 
+    end_time = perf_counter()
+    print(f"Time taken to process dataset: {end_time - start_time:.2f} seconds")
     seed = make_sentence(k_seqs[random.randint(0, len(k_seqs) - 1)])
     # seed = input("Seed: ")
     length = 200
