@@ -38,25 +38,16 @@ def weighted_choice(options: List[str], probabilities: List[float]) -> str:
     return options[index]
 
 
-def split_choice(possibilities: Dict[str, float]) -> str:
-    words: List[str] = []
-    likelihoods: List[float] = []
-    for key, value in possibilities.items():
-        words.append(key)
-        likelihoods.append(value)
-
-    return weighted_choice(words, likelihoods)
-
-
 def choice(matrix: Dict[Tuple[str, ...], Dict[str, int]], k_seq_counts: Dict[Tuple[str, ...], int], k_seq: Tuple[str, ...]) -> str:
     words_dict: Dict[str, int] = matrix[k_seq]
-    possibilities: Dict[str, float] = {}
     total: int = k_seq_counts[k_seq]
+    words: List[str] = []
+    likelihoods: List[float] = []
     for word, freq in words_dict.items():
-        possibilities[word] = freq / total
+        words.append(word)
+        likelihoods.append(freq / total)
 
-    return split_choice(possibilities)
-
+    return weighted_choice(words, likelihoods)
 
 
 def chain(seed: str, length: int, matrix: Dict[Tuple[str, ...], Dict[str, int]], k_seq_counts: Dict[Tuple[str, ...], int], k: int) -> str:
@@ -64,14 +55,14 @@ def chain(seed: str, length: int, matrix: Dict[Tuple[str, ...], Dict[str, int]],
     seed_tuple_len: int = len(seed_tuple)
     if seed_tuple_len != k:
         raise ValueError(f"Expected {k} tokens as seed, got {seed_tuple_len}")
-    
+
     sentence: List[str] = []
     k_seq: Tuple[str, ...] = seed_tuple
     sentence.append(make_sentence(list(seed_tuple)))
     for _ in range(length):
         best_word = choice(matrix, k_seq_counts, k_seq)
         sentence.append(best_word)
-        k_seq = tuple(list(k_seq[1 :]) + [best_word])
+        k_seq = tuple(list(k_seq[1:]) + [best_word])
 
     return make_sentence(sentence)
 
