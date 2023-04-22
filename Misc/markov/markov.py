@@ -68,7 +68,7 @@ def chain(seed: str, length: int, matrix: Dict[Tuple[str, ...], Dict[str, int]],
 
 
 def main() -> None:
-    corpus_path: str = "txt/train.txt"
+    corpus_path: str = "txt/train_ascii.txt"
     # corpus_path: str = input("Corpus path: ")
     corpus: str = ""
     with open(corpus_path, "r") as f:
