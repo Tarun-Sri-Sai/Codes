@@ -80,7 +80,7 @@ def to_str(tuple):
 def main():
     corpus_path = "txt/ice_and_fire_ascii.txt"
     # corpus_path = input("Corpus path: ")
-    k = 4
+    k = 3
     # k = int(input("k value: "))
     start_time = perf_counter()
     cache = get_cache("json/cache.json")
