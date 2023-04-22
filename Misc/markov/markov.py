@@ -4,7 +4,7 @@ from typing import List, Tuple, Dict
 
 def split_sentence(sen: str) -> List[str]:
     sen = sen.strip()
-    for spaced in ".,?!;:/&\'\"+-*%=()[]{}_@$#`~<>^":
+    for spaced in ".,?!;:/&+-*%=()[]{}_@$#`~<>^":
         sen = sen.replace(spaced, f" {spaced} ")
 
     return sen.replace("[\n\t ]+", " ").split()
@@ -22,7 +22,7 @@ def get_k_seqs(tokens: str, k: int) -> List[Tuple[str, ...]]:
 def make_sentence(tokens: List[str]) -> str:
     result: str = ""
     for token in tokens:
-        if token in ".,?!;:\%\'\"-":
+        if token in ".,?!;:\%\-":
             result += token
         else:
             result += (" " + token)
