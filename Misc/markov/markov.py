@@ -77,8 +77,8 @@ def chain(seed: str, length: int, matrix: Dict[Tuple[str, ...], Dict[str, int]],
 
 
 def main() -> None:
-    # corpus_path: str = input("Corpus path: ")
     corpus_path: str = "txt/train.txt"
+    # corpus_path: str = input("Corpus path: ")
     corpus: str = ""
     with open(corpus_path, "r") as f:
         corpus += f.read()
@@ -102,10 +102,10 @@ def main() -> None:
         for _, freq in next_words.items():
             k_seq_counts[k_seq] = k_seq_counts.get(k_seq, 0) + freq
 
-    # seed: str = input("Seed: ")
     seed: str = make_sentence(k_seqs[random.randint(0, len(k_seqs) - 1)])
-    # length: int = int(input("Chain length: "))
+    # seed: str = input("Seed: ")
     length: int = 200
+    # length: int = int(input("Chain length: "))
     print(chain(seed, length, matrix, k_seq_counts, k))
 
 
