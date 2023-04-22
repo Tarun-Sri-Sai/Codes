@@ -86,7 +86,7 @@ def main() -> None:
     corpus_words: List[str] = split_sentence(corpus)
     corpus_len = len(corpus_words)
     k: int = 4
-    #k = int(input("Enter k: "))
+    # k: int = int(input("Enter k: "))
     k_seqs: List[Tuple[str, ...]] = get_k_seqs(corpus_words, k)
     matrix: Dict[Tuple[str, ...], Dict[str, int]] = {}
     for i, k_seq in enumerate(k_seqs):
