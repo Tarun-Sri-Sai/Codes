@@ -1,8 +1,8 @@
 from numpy import random, array
-from typing import List, Tuple, Dict
+from json import load, dump
 
 
-def split_sentence(sen: str) -> List[str]:
+def split_sentence(sen):
     sen = sen.strip()
     for spaced in ".,?!;:/&+-*%=()[]{}_@$#`~<>^":
         sen = sen.replace(spaced, f" {spaced} ")
@@ -10,17 +10,17 @@ def split_sentence(sen: str) -> List[str]:
     return sen.replace("[\n\t ]+", " ").split()
 
 
-def get_k_seqs(tokens: str, k: int) -> List[Tuple[str, ...]]:
-    tokens_len: int = len(tokens)
-    result: List[Tuple[str, ...]] = []
+def get_k_seqs(tokens, k):
+    tokens_len = len(tokens)
+    result = []
     for i in range(tokens_len - k):
         result.append(tuple(tokens[i: i + k]))
 
     return result
 
 
-def make_sentence(tokens: List[str]) -> str:
-    result: str = ""
+def make_sentence(tokens):
+    result = ""
     for token in tokens:
         if token in ".,?!;:\%\-":
             result += token
@@ -30,7 +30,7 @@ def make_sentence(tokens: List[str]) -> str:
     return result.strip()
 
 
-def weighted_choice(options: List[str], probabilities: List[float]) -> str:
+def weighted_choice(options, probabilities):
     probabilities = array(probabilities)
     probabilities /= probabilities.sum()
 
@@ -38,11 +38,11 @@ def weighted_choice(options: List[str], probabilities: List[float]) -> str:
     return options[index]
 
 
-def choice(matrix: Dict[Tuple[str, ...], Dict[str, int]], k_seq_counts: Dict[Tuple[str, ...], int], k_seq: Tuple[str, ...]) -> str:
-    words_dict: Dict[str, int] = matrix[k_seq]
-    total: int = k_seq_counts[k_seq]
-    words: List[str] = []
-    likelihoods: List[float] = []
+def choice(matrix, k_seq_counts, k_seq):
+    words_dict = matrix[to_str(k_seq)]
+    total = k_seq_counts[to_str(k_seq)]
+    words = []
+    likelihoods = []
     for word, freq in words_dict.items():
         words.append(word)
         likelihoods.append(freq / total)
@@ -50,14 +50,14 @@ def choice(matrix: Dict[Tuple[str, ...], Dict[str, int]], k_seq_counts: Dict[Tup
     return weighted_choice(words, likelihoods)
 
 
-def chain(seed: str, length: int, matrix: Dict[Tuple[str, ...], Dict[str, int]], k_seq_counts: Dict[Tuple[str, ...], int], k: int) -> str:
-    seed_tuple: Tuple[str, ...] = tuple(split_sentence(seed))
-    seed_tuple_len: int = len(seed_tuple)
+def chain(seed, length, matrix, k_seq_counts, k):
+    seed_tuple = tuple(split_sentence(seed))
+    seed_tuple_len = len(seed_tuple)
     if seed_tuple_len != k:
         raise ValueError(f"Expected {k} tokens as seed, got {seed_tuple_len}")
 
-    sentence: List[str] = []
-    k_seq: Tuple[str, ...] = seed_tuple
+    sentence = []
+    k_seq = seed_tuple
     sentence.append(make_sentence(list(seed_tuple)))
     for _ in range(length):
         best_word = choice(matrix, k_seq_counts, k_seq)
@@ -67,36 +67,65 @@ def chain(seed: str, length: int, matrix: Dict[Tuple[str, ...], Dict[str, int]],
     return make_sentence(sentence)
 
 
-def main() -> None:
-    corpus_path: str = "txt/train_ascii.txt"
-    # corpus_path: str = input("Corpus path: ")
-    corpus: str = ""
-    with open(corpus_path, "r") as f:
-        corpus += f.read()
+def get_cache(cache_path):
+    with open(cache_path, "r") as c_read:
+        return load(c_read)
 
-    corpus_words: List[str] = split_sentence(corpus)
-    corpus_len = len(corpus_words)
-    k: int = 4
-    # k: int = int(input("Enter k: "))
-    k_seqs: List[Tuple[str, ...]] = get_k_seqs(corpus_words, k)
-    matrix: Dict[Tuple[str, ...], Dict[str, int]] = {}
-    for i, k_seq in enumerate(k_seqs):
-        if i + k >= corpus_len:
-            break
 
-        next_word: str = corpus_words[i + k]
-        matrix[k_seq] = matrix.get(k_seq, {})
-        matrix[k_seq][next_word] = matrix[k_seq].get(next_word, 0) + 1
+def to_str(tuple):
+    return "".join(["(", " ".join(tuple), ")"])
 
-    k_seq_counts: Dict[Tuple[str, ...], int] = {}
-    for k_seq, next_words in matrix.items():
-        for _, freq in next_words.items():
-            k_seq_counts[k_seq] = k_seq_counts.get(k_seq, 0) + freq
 
-    seed: str = make_sentence(k_seqs[random.randint(0, len(k_seqs) - 1)])
-    # seed: str = input("Seed: ")
-    length: int = 200
-    # length: int = int(input("Chain length: "))
+def main():
+    cache = get_cache("json/cache.json")
+    corpus_path = "txt/ice_and_fire_ascii.txt"
+    # corpus_path = input("Corpus path: ")
+    k = 4
+    # k = int(input("Enter k: "))
+    if corpus_path in cache and k in cache[corpus_path]:
+        cached_data = cache[corpus_path][k]
+        k_seqs = cached_data["k_seqs"]
+        k_seq_counts = cached_data["k_seq_counts"]
+        matrix = cached_data["matrix"]
+
+    else:
+        corpus = ""
+        with open(corpus_path, "r") as f:
+            corpus += f.read()
+
+        corpus_words = split_sentence(corpus)
+        corpus_len = len(corpus_words)
+        k_seqs = get_k_seqs(corpus_words, k)
+        matrix = {}
+        for i, k_seq in enumerate(k_seqs):
+            if i + k >= corpus_len:
+                break
+
+            next_word = corpus_words[i + k]
+            matrix[to_str(k_seq)] = matrix.get(to_str(k_seq), {})
+            matrix[to_str(k_seq)][next_word] = matrix[to_str(
+                k_seq)].get(next_word, 0) + 1
+
+        k_seq_counts = {}
+        for k_seq_as_str, next_words in matrix.items():
+            for _, freq in next_words.items():
+                k_seq_counts[k_seq_as_str] = k_seq_counts.get(
+                    k_seq_as_str, 0) + freq
+
+        cache = {}
+        cache[corpus_path] = {}
+        cache[corpus_path][k] = {}
+        cached_data = cache[corpus_path][k]
+        cached_data["k_seqs"] = k_seqs
+        cached_data["k_seq_counts"] = k_seq_counts
+        cached_data["matrix"] = matrix
+        with open("json/cache.json", "w") as c_write:
+            dump(cache, c_write)
+
+    seed = make_sentence(k_seqs[random.randint(0, len(k_seqs) - 1)])
+    # seed = input("Seed: ")
+    length = 200
+    # length = int(input("Chain length: "))
     print(chain(seed, length, matrix, k_seq_counts, k))
 
 
