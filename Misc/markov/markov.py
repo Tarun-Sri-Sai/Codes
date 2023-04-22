@@ -22,7 +22,7 @@ def get_k_seqs(tokens: str, k: int) -> List[Tuple[str, ...]]:
 def make_sentence(tokens: List[str]) -> str:
     result: str = ""
     for token in tokens:
-        if token in ".,?!;:\%\'\"":
+        if token in ".,?!;:\%":
             result += (token)
         else:
             result += (" " + token)
