@@ -3,12 +3,14 @@ from json import load, dump
 from time import perf_counter
 
 
-def split_sentence(sen):
-    sen = sen.strip()
-    for spaced in ".,?!;:/&+-*%=()[]{}_@$#`~<>^":
-        sen = sen.replace(spaced, f" {spaced} ")
+def tokenize(text):
+    symbols = [".", ",", "\'", "\"", "“", "”", "?", "!",
+               "[", "]", "{", "}", "(", ")", "-", ":", ";"]
+    text = text.strip()
+    for symbol in symbols:
+        text = text.replace(symbol, f" {symbol} ")
 
-    return sen.replace("[\n\t ]+", " ").split()
+    return text.replace("[\n\t ]+", " ").split()
 
 
 def get_k_seqs(tokens, k):
@@ -20,15 +22,28 @@ def get_k_seqs(tokens, k):
     return result
 
 
-def make_sentence(tokens):
-    result = ""
+def detokenize(tokens):
+    text = []
+    no_space_symbols = ["\'"]
+    post_space_symbols = [".", ",", "?", "!", ":", ";", "”", "]", "}", ")"]
+    pre_space_symbols = ["“", "[", "{", "("]
     for token in tokens:
-        if token in ".,?!;:\%\-":
-            result += token
-        else:
-            result += (" " + token)
+        if token in no_space_symbols or token in post_space_symbols:
+            if len(text) > 0 and text[-1] == " ":
+                text = text[:-1]
 
-    return result.strip()
+            text.append(token)
+            if token in post_space_symbols:
+                text.append(" ")
+
+        else:
+            if len(text) > 0 and text[-1] != " " and text[-1] not in pre_space_symbols:
+                text.append(" ")
+            text.append(token)
+            if token not in pre_space_symbols:
+                text.append(" ")
+
+    return "".join(text)
 
 
 def weighted_choice(options, probabilities):
@@ -52,20 +67,20 @@ def choice(matrix, k_seq_counts, k_seq):
 
 
 def chain(seed, length, matrix, k_seq_counts, k):
-    seed_tuple = tuple(split_sentence(seed))
+    seed_tuple = tuple(tokenize(seed))
     seed_tuple_len = len(seed_tuple)
     if seed_tuple_len != k:
         raise ValueError(f"Expected {k} tokens as seed, got {seed_tuple_len}")
 
     sentence = []
     k_seq = seed_tuple
-    sentence.append(make_sentence(list(seed_tuple)))
+    sentence.append(detokenize(list(seed_tuple)))
     for _ in range(length):
         best_word = choice(matrix, k_seq_counts, k_seq)
         sentence.append(best_word)
         k_seq = tuple(list(k_seq[1:]) + [best_word])
 
-    return make_sentence(sentence)
+    return detokenize(sentence)
 
 
 def get_cache(cache_path):
@@ -74,11 +89,11 @@ def get_cache(cache_path):
 
 
 def to_str(tuple):
-    return "".join(["(", " ".join(tuple), ")"])
+    return "".join(["(", ", ".join(tuple), ")"])
 
 
 def main():
-    corpus_path = "txt/ice_and_fire_ascii.txt"
+    corpus_path = "txt/ice_and_fire.txt"
     # corpus_path = input("Corpus path: ")
     k = 3
     # k = int(input("k value: "))
@@ -93,10 +108,10 @@ def main():
     else:
         print("Writing into cache...")
         corpus = ""
-        with open(corpus_path, "r") as f:
+        with open(corpus_path, "r", encoding="utf-8") as f:
             corpus += f.read()
 
-        corpus_words = split_sentence(corpus)
+        corpus_words = tokenize(corpus)
         corpus_len = len(corpus_words)
         k_seqs = get_k_seqs(corpus_words, k)
         matrix = {}
@@ -126,8 +141,9 @@ def main():
             dump(cache, c_write)
 
     end_time = perf_counter()
-    print(f"Time taken to process dataset: {end_time - start_time:.2f} seconds")
-    seed = make_sentence(k_seqs[random.randint(0, len(k_seqs) - 1)])
+    print(
+        f"Time taken to process dataset: {end_time - start_time:.2f} seconds")
+    seed = detokenize(k_seqs[random.randint(0, len(k_seqs) - 1)])
     # seed = input("Seed: ")
     length = 200
     # length = int(input("Chain length: "))
