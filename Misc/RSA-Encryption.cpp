@@ -82,18 +82,19 @@ int main()
 {
     int p = 13, q = 29;
     Rsa rsa(p, q);
-    string s = "Mango fruit", cipher_text;
+    string s, cipher_text;
     vector<int> cipher;
-    // cout << s << '\n';
+    cout << "Enter text: ";
+    cin >> s;
     for (int len = s.length(), i = 0; i < len; i++)
     {
         cipher.push_back(rsa.encrypt((int)s[i]));
         cipher_text.push_back((char)(cipher[i] % 256));
     }
-    cout << cipher_text << '\n';
+    cout << "\nCipher text: " <<  cipher_text << '\n';
     string decipher;
     for (int len = cipher.size(), i = 0; i < len; i++)
         decipher += (char)rsa.decrypt(cipher[i]);
-    cout << decipher << '\n';
+    cout << "\nDecipher text: " <<  cipher_text << '\n';
     return 0;
 }
