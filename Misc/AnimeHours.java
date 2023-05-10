@@ -37,7 +37,7 @@ public class AnimeHours {
                 for (int i = 0; i < words.length; ++i) {
                     if (words[i].matches("\\d+") && i == words.length - 1) {
                         StringBuilder sb = new StringBuilder("(");
-                        float val = Float.parseFloat(words[i]) / 3F;
+                        float val = Float.parseFloat(words[i]) * 22F / 60F;
 
                         sum += val;
                         System.err.println("Added value: " + String.format("%6.2f", val)  + " for " + line);
