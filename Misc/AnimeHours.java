@@ -29,6 +29,10 @@ public class AnimeHours {
             if (line.contains("Total watchtime:")) {
                 continue;
             }
+            if (!line.contains("Done")) {
+                fileOut.write(line + "\n");
+                continue;
+            }
             if (!line.contains("hrs")) {
                 for (int i = 0; i < words.length; ++i) {
                     if (words[i].matches("\\d+") && i == words.length - 1) {
@@ -36,7 +40,7 @@ public class AnimeHours {
                         float val = Float.parseFloat(words[i]) / 3F;
 
                         sum += val;
-                        System.err.println("Added value: " + val + " for " + line);
+                        System.err.println("Added value: " + String.format("%6.2f", val)  + " for " + line);
                         sb.append(String.format("%.2f", val));
                         sb.append(" hrs)");
                         words[i] = sb.toString();
@@ -56,7 +60,7 @@ public class AnimeHours {
                 float val = Float.parseFloat(words[words.length - 2].substring(1));
                 
                 sum += val;
-                System.err.println("Added value: " + val + " for " + line);
+                System.err.println("Added value: " + String.format("%6.2f", val)  + " for " + line);
                 fileOut.write(line + "\n");
             }
         }
