@@ -1,10 +1,33 @@
+#ifndef DYN_STR_H
+#define DYN_STR_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "dynstr.h"
 
-#define MAX_STRING 0xFFFF
+#define MAX_STRING 0x7FFFFFFF
 #define DEREF 0
+
+typedef struct String_t
+{
+    char *val;
+    int length, capacity;
+} String;
+
+String *init(char *val);
+String *new_string();
+void string_append(String *source, char *appendix);
+void string_extend(String *source, String *extension);
+void delete_string(String **source_ptr);
+char *string_debug_print(String *source);
+void string_push_back(String *source, char appendix);
+void string_pop_back(String **source_ptr);
+const char *string_value_of(String *source);
+int string_length(String *source);
+void string_nappend(String *source, char *appendix, int max_size);
+void string_nextend(String *source, String *extension, int max_size);
+static int min(int a, int b);
+static void trim_string(char **string_ptr);
 
 String *init(char *val)
 {
@@ -15,10 +38,10 @@ String *init(char *val)
 
 String *new_string()
 {
-    String *retval = (String *) malloc(sizeof (String *));
+    String *retval = (String *)malloc(sizeof(String *));
     retval->capacity = 2;
     retval->length = 0;
-    retval->val = (char *) calloc(retval->capacity + 1, sizeof (char));
+    retval->val = (char *)calloc(retval->capacity + 1, sizeof(char));
     retval->val[retval->length] = '\0';
     return retval;
 }
@@ -33,10 +56,10 @@ void string_append(String *source, char *appendix)
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
-        if ((float) source->length / source->capacity > 0.75)
+        if ((float)source->length / source->capacity > 0.75)
         {
             source->capacity *= 2;
-            source->val = (char *) realloc(source->val, (source->capacity + 1) * sizeof (char));
+            source->val = (char *)realloc(source->val, (source->capacity + 1) * sizeof(char));
         }
         source->val[source->length++] = t;
     }
@@ -53,10 +76,10 @@ void string_extend(String *source, String *extension)
     for (i = 0; i < length; ++i)
     {
         char t = extension->val[i];
-        if ((float) source->length / source->capacity > 0.75)
+        if ((float)source->length / source->capacity > 0.75)
         {
             source->capacity *= 2;
-            source->val = (char *) realloc(source->val, (source->capacity + 1) * sizeof (char));
+            source->val = (char *)realloc(source->val, (source->capacity + 1) * sizeof(char));
         }
         source->val[source->length++] = t;
     }
@@ -80,7 +103,7 @@ char *string_debug_print(String *source)
     {
         return "";
     }
-    char *debug_string = (char *) calloc(MAX_STRING, sizeof(char));
+    char *debug_string = (char *)calloc(MAX_STRING, sizeof(char));
 
     sprintf_s(debug_string, MAX_STRING, "Length: %d\nCapacity: %d\nString: %s\n", source->length, source->capacity, source->val);
     trim_string(&debug_string);
@@ -97,10 +120,10 @@ void string_push_back(String *source, char appendix)
     {
         return;
     }
-    if ((float) source->length / source->capacity > 0.75)
+    if ((float)source->length / source->capacity > 0.75)
     {
         source->capacity *= 2;
-        source->val = (char *) realloc(source->val, (source->capacity + 1) * sizeof (char));
+        source->val = (char *)realloc(source->val, (source->capacity + 1) * sizeof(char));
     }
     source->val[source->length++] = appendix;
     source->val[source->length] = '\0';
@@ -120,10 +143,10 @@ void string_pop_back(String **source_ptr)
         return;
     }
     source_ptr[DEREF]->val[--source_ptr[DEREF]->length] = '\0';
-    if ((float) source_ptr[DEREF]->length / source_ptr[DEREF]->capacity < 0.25 && source_ptr[DEREF]->capacity > 2)
+    if ((float)source_ptr[DEREF]->length / source_ptr[DEREF]->capacity < 0.25 && source_ptr[DEREF]->capacity > 2)
     {
         source_ptr[DEREF]->capacity /= 2;
-        source_ptr[DEREF]->val = (char *) realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof (char));
+        source_ptr[DEREF]->val = (char *)realloc(source_ptr[DEREF]->val, (source_ptr[DEREF]->capacity + 1) * sizeof(char));
     }
 }
 
@@ -134,7 +157,7 @@ const char *string_value_of(String *source)
         return NULL;
     }
     int length = string_length(source);
-    char *result = (char *) calloc(length, sizeof(char));
+    char *result = (char *)calloc(length, sizeof(char));
 
     memcpy_s(result, length, source->val, length);
     return result;
@@ -159,10 +182,10 @@ void string_nappend(String *source, char *appendix, int max_size)
     for (i = 0; i < length; ++i)
     {
         char t = appendix[i];
-        if ((float) source->length / source->capacity > 0.75)
+        if ((float)source->length / source->capacity > 0.75)
         {
             source->capacity *= 2;
-            source->val = (char *) realloc(source->val, (source->capacity + 1) * sizeof (char));
+            source->val = (char *)realloc(source->val, (source->capacity + 1) * sizeof(char));
         }
         source->val[source->length++] = t;
     }
@@ -179,10 +202,10 @@ void string_nextend(String *source, String *extension, int max_size)
     for (i = 0; i < length; ++i)
     {
         char t = extension->val[i];
-        if ((float) source->length / source->capacity > 0.75)
+        if ((float)source->length / source->capacity > 0.75)
         {
             source->capacity *= 2;
-            source->val = (char *)realloc(source->val, (source->capacity + 1) * sizeof (char));
+            source->val = (char *)realloc(source->val, (source->capacity + 1) * sizeof(char));
         }
         source->val[source->length++] = t;
     }
@@ -198,5 +221,7 @@ static void trim_string(char **string_ptr)
 {
     size_t length = strnlen_s(string_ptr[DEREF], MAX_STRING);
 
-    string_ptr[DEREF] = (char *) realloc(string_ptr[DEREF], length * sizeof(char));
+    string_ptr[DEREF] = (char *)realloc(string_ptr[DEREF], length * sizeof(char));
 }
+
+#endif
