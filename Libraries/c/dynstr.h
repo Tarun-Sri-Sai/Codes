@@ -32,7 +32,7 @@ static void trim_string(char **string_ptr);
 String *init(char *val)
 {
     String *retval = new_string();
-    append(retval, val);
+    string_append(retval, val);
     return retval;
 }
 
