@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-import java_packages.collections.PriorityQueue;
-
 public class Dijkstra {
     private static Scanner sc;
     private static BufferedWriter bw;
