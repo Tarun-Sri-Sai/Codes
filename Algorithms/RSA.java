@@ -118,7 +118,7 @@ public class RSA {
             int length = encryptedText.length;
             StringBuilder result = new StringBuilder();
             for (int i = 0; i < length; i++) {
-                result.append((char)((RSA.power(encryptedText[i], privateKeyExponent, modulus) + 128) % 128));
+                result.append((char) RSA.power(encryptedText[i], privateKeyExponent, modulus));
             }
             return result.toString();
         }
