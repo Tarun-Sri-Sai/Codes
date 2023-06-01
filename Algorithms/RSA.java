@@ -147,7 +147,12 @@ public class RSA {
     
         public int getRandom() {
             int randIndex = random.nextInt(primes.size());
-            return primes.remove(randIndex);
+            Integer result = primes.get(randIndex);
+            while (result == null) {
+                result = primes.get(randIndex);
+            }
+            primes.set(randIndex, null);
+            return result;
         }
 
         private int largestNum(int digits) {
