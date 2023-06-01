@@ -138,14 +138,14 @@ public class RSA {
         private Random random;
         private final int MAX_PRIME, MIN_PRIME;
     
-        public Primes(int digits) {
+        private Primes(int digits) {
             MAX_PRIME = largestNum(digits);
             MIN_PRIME = MAX_PRIME / 10 + 1;
             random = new Random(System.currentTimeMillis());
             primes = segmentedSeive(MIN_PRIME, MAX_PRIME);
         }
     
-        public int getRandom() {
+        private int getRandom() {
             int randIndex = random.nextInt(primes.size());
             Integer result = primes.get(randIndex);
             while (result == null) {
