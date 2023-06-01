@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class RSA {
     private PublicKey publicKey;
@@ -10,7 +7,7 @@ public class RSA {
 
     public RSA() {
         random = new Random(System.currentTimeMillis());
-        Primes primes = new Primes();
+        Primes primes = new Primes(4);
         int prime1 = primes.getRandom(), prime2 = primes.getRandom();
         int modulus = prime1 * prime2, totient = (prime1 - 1) * (prime2 - 1);
         KeyExponents keyExponents = getKeyExponents(totient, modulus);
@@ -139,30 +136,63 @@ public class RSA {
     private class Primes {
         private List<Integer> primes;
         private Random random;
-        private static final int MAX_PRIME = 99, MIN_PRIME = MAX_PRIME / 10;
+        private final int MAX_PRIME, MIN_PRIME;
     
-        public Primes() {
+        public Primes(int digits) {
+            MAX_PRIME = largestNum(digits);
+            MIN_PRIME = MAX_PRIME / 10 + 1;
             random = new Random(System.currentTimeMillis());
-            primes = new ArrayList<>();
-            boolean[] isPrime = new boolean[MAX_PRIME + 1];
-            Arrays.fill(isPrime, true);
-            isPrime[0] = isPrime[1] = false;
-            for (int i = 2; i <= MAX_PRIME; i++) {
-                if (!isPrime[i]) {
-                    continue;
-                }
-                primes.add(i);
-                for (int j = i * i; j <= MAX_PRIME; j += i) {
-                    isPrime[j] = false;
-                }
-            }
-            while (primes.get(0) <= MIN_PRIME) {
-                primes.remove(0);
-            }
+            primes = segmentedSeive(MIN_PRIME, MAX_PRIME);
         }
     
         public int getRandom() {
-            return primes.remove(random.nextInt(primes.size()));
+            int randIndex = random.nextInt(primes.size());
+            return primes.remove(randIndex);
+        }
+
+        private int largestNum(int digits) {
+            int result = 0;
+            for (int i = 0; i < digits; i++) {
+                result = result * 10 + 9;
+            }
+            return result;
+        }
+
+        private List<Integer> segmentedSeive(int minValue, int maxValue) {
+            int maxSqrt = (int)Math.ceil(Math.sqrt(maxValue));
+            boolean[] isPrime = seive(maxSqrt);
+            boolean[] isPrimeRange = new boolean[maxValue - minValue + 1];
+            Arrays.fill(isPrimeRange, true);
+            for (int length = isPrime.length, i = 2; i < length; i++) {
+                for (int j = ceilMultiple(i, minValue); j <= maxValue; j += i) {
+                    isPrimeRange[j - minValue] = false;
+                }
+            }
+            List<Integer> result = new ArrayList<>();
+            for (int i = minValue; i <= maxValue; i++) {
+                if (isPrimeRange[i - minValue]) {
+                    result.add(i);
+                }
+            }
+            return result;
+        }
+
+        private boolean[] seive(int maxValue) {
+            boolean[] result = new boolean[maxValue + 1];
+            Arrays.fill(result, true);
+            for (int i = 2; i * i <= maxValue; i++) {
+                if (!result[i]) {
+                    continue;
+                }
+                for (int j = i * i; j <= maxValue; j += i) {
+                    result[j] = false;
+                }
+            }
+            return result;
+        }
+
+        private int ceilMultiple(int k, int n) {
+            return k * (int)Math.ceil((double)n / k);
         }
     }
 }
