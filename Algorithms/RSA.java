@@ -4,15 +4,16 @@ public class RSA {
     private PublicKey publicKey;
     private PrivateKey privateKey;
     private Random random;
+    private static final int PUBLIC_KEY_EXPONENT = 65537, MAX_SIZE = 10;
 
     public RSA() {
         random = new Random(System.currentTimeMillis());
         Primes primes = new Primes(4);
         int prime1 = primes.getRandom(), prime2 = primes.getRandom();
         int modulus = prime1 * prime2, totient = (prime1 - 1) * (prime2 - 1);
-        KeyExponents keyExponents = getKeyExponents(totient, modulus);
-        publicKey = new PublicKey(modulus, keyExponents.publicKeyExponent);
-        privateKey = new PrivateKey(modulus, keyExponents.privateKeyExponent);
+        publicKey = new PublicKey(modulus, PUBLIC_KEY_EXPONENT);
+        int privateKeyExponent = getPrivateKeyExponent(PUBLIC_KEY_EXPONENT, totient);
+        privateKey = new PrivateKey(modulus, privateKeyExponent);
     }
 
     public PublicKey getPublicKey() {
@@ -23,47 +24,14 @@ public class RSA {
         return privateKey;
     }
 
-    public KeyExponents getKeyExponents(int totient, int modulus) {
-        List<Integer> publicKeyExponents = new ArrayList<>();
-        for (int i = 2; i < totient; i++) {
-            if (gcd(totient, i) == 1) {
-                publicKeyExponents.add(i);
-            }
-        }
-        if (publicKeyExponents.size() == 0) {
-            throw new IllegalArgumentException("Public key exponent not found");
-        }
-        int publicKeyExponent = publicKeyExponents.remove(random.nextInt(publicKeyExponents.size()));
-        int privateKeyExponent = 1;
-        while (true) {
-            try {
-                privateKeyExponent = getPrivateKeyExponent(publicKeyExponent, totient);
-                break;
-            } catch (IllegalArgumentException iae) {
-                try {
-                    publicKeyExponent = publicKeyExponents.remove(random.nextInt(publicKeyExponents.size()));
-                } catch (IllegalArgumentException iae2) {
-                    throw new IllegalArgumentException("Public key exponent not found after running err of available keys");
-                }
-            }
-        }
-        return new KeyExponents(publicKeyExponent, privateKeyExponent);
-    }
-
-    private int gcd(int a, int b) {
-        while (b != 0) {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
-
     private int getPrivateKeyExponent(int publicKeyExponent, int totient) {
         List<Integer> results = new ArrayList<>();
         for (int i = 1; i < totient; i++) {
             if (RSA.mul(publicKeyExponent, i, totient) % totient == 1) {
                 results.add(i);
+            }
+            if (results.size() > MAX_SIZE) {
+                break;
             }
         }
         if (results.size() == 0) {
@@ -100,7 +68,7 @@ public class RSA {
             int length = plainText.length();
             int[] result = new int[length];
             for (int i = 0; i < length; i++) {
-                result[i] = RSA.power((int)plainText.charAt(i), publicKeyExponent, modulus);
+                result[i] = RSA.power((int) plainText.charAt(i), publicKeyExponent, modulus);
             }
             return result;
         }
@@ -124,27 +92,18 @@ public class RSA {
         }
     }
 
-    private class KeyExponents {
-        public int publicKeyExponent, privateKeyExponent;
-
-        public KeyExponents(int publicKeyExponent, int privateKeyExponent) {
-            this.publicKeyExponent = publicKeyExponent;
-            this.privateKeyExponent = privateKeyExponent;
-        }
-    }
-
     private class Primes {
         private List<Integer> primes;
         private Random random;
         private final int MAX_PRIME, MIN_PRIME;
-    
+
         private Primes(int digits) {
             MAX_PRIME = largestNum(digits);
             MIN_PRIME = MAX_PRIME / 10 + 1;
             random = new Random(System.currentTimeMillis());
             primes = segmentedSeive(MIN_PRIME, MAX_PRIME);
         }
-    
+
         private int getRandom() {
             int randIndex = random.nextInt(primes.size());
             Integer result = primes.get(randIndex);
@@ -164,7 +123,7 @@ public class RSA {
         }
 
         private List<Integer> segmentedSeive(int minValue, int maxValue) {
-            int maxSqrt = (int)Math.ceil(Math.sqrt(maxValue));
+            int maxSqrt = (int) Math.ceil(Math.sqrt(maxValue));
             boolean[] isPrime = seive(maxSqrt);
             boolean[] isPrimeRange = new boolean[maxValue - minValue + 1];
             Arrays.fill(isPrimeRange, true);
@@ -197,7 +156,7 @@ public class RSA {
         }
 
         private int ceilMultiple(int k, int n) {
-            return k * (int)Math.ceil((double)n / k);
+            return k * (int) Math.ceil((double) n / k);
         }
     }
 }
