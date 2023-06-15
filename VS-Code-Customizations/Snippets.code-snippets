@@ -92,9 +92,9 @@
 		"prefix": "py-console-temp",
 		"body": [
 			"def main():",
-			"\t$1\n",
+			"\t$1\n\n",
 			"if __name__ == \"__main__\":",
-			"\tmain()"
+			"\tmain()\n"
 		]
 	}
 }
