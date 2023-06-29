@@ -1,7 +1,7 @@
 {
 	"Java Template for Console I/O": {
 		"scope": "java",
-		"prefix": "java-console-temp",
+		"prefix": "javactem",
 		"body": [
 			"import java.io.*;",
 			"import java.util.*;\n",
@@ -12,15 +12,14 @@
 			"\t\t$1",
 			"\t\tsc.close();",
 			"\t\tbw.flush();",
-			"\t}", 
+			"\t}",
 			"}",
 		],
 		"description": "Initialise code for Java console I/O"
 	},
-
 	"Java Template for File I/O": {
 		"scope": "java",
-		"prefix": "java-file-temp",
+		"prefix": "javaftem",
 		"body": [
 			"import java.io.*;",
 			"import java.util.*;\n",
@@ -31,31 +30,29 @@
 			"\t\t$1",
 			"\t\tbr.close();",
 			"\t\tbw.close();",
-			"\t}", 
+			"\t}",
 			"}",
 		],
 		"description": "Initialise code for Java file I/O"
 	},
-
 	"C++ Template for Console I/O": {
 		"scope": "cpp",
-		"prefix": "cpp-console-temp",
+		"prefix": "cppctem",
 		"body": [
 			"#include <bits/stdc++.h>",
 			"using namespace std;\n",
 			"int main(void) {",
-    		"\tios::sync_with_stdio(false);",
+			"\tios::sync_with_stdio(false);",
 			"\tcin.tie(NULL);",
 			"\t$1",
-    		"\treturn 0;",
+			"\treturn 0;",
 			"}"
 		],
 		"description": "Initialise code for C++ console I/O"
 	},
-
 	"C++ Template for File I/O": {
 		"scope": "cpp",
-		"prefix": "cpp-file-temp",
+		"prefix": "cppftem",
 		"body": [
 			"#include <bits/stdc++.h>",
 			"using namespace std;\n",
@@ -65,14 +62,13 @@
 			"\t$1",
 			"\tfin.close();",
 			"\tfout.close();",
-    		"\treturn 0;",
+			"\treturn 0;",
 			"}"
 		]
 	},
-
 	"C Template for Console I/O": {
 		"scope": "c",
-		"prefix": "c-console-temp",
+		"prefix": "ctem",
 		"body": [
 			"#include <stdio.h>",
 			"#include <stdlib.h>",
@@ -81,20 +77,25 @@
 			"#include <math.h>\n",
 			"int main(void) {",
 			"\t$1",
-    		"\treturn 0;",
+			"\treturn 0;",
 			"}"
 		],
 		"description": "Initialise code for C console I/O"
 	},
-
 	"Python Template for Console I/O": {
 		"scope": "python",
-		"prefix": "py-console-temp",
+		"prefix": "pytem",
 		"body": [
 			"def main():",
 			"\t$1\n\n",
 			"if __name__ == \"__main__\":",
 			"\tmain()\n"
+		]
+	},
+	"Prompt": {
+		"prefix": "matprom",
+		"body": [
+			"Prepare detailed notes in Markdown for $1."
 		]
 	}
 }
