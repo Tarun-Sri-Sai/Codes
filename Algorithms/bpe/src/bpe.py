@@ -101,22 +101,25 @@ def main():
         if isdir(folder):
             continue
         mkdir(folder)
-
+    modes = {
+        'train': 0,
+        'test': 1
+    }
     mode = input('Enter training mode: ')
+    if mode not in modes:
+        print('Wrong mode, options: train, test')
+        return
     convert(mode)
     paths = {
         'txt': join(folders['txt'], '.'.join([mode, 'txt'])),
         'json': join(folders['json'], '.'.join(['vocab', 'json']))
     }
     bpe = BPE()
-    match mode:
-        case 'train':
-            bpe.train(paths['txt'], paths['json'], 10)
-        case 'test':
-            tokens_path = join(folders['txt'], '.'.join(['tokens', 'txt']))
-            bpe.test(paths['txt'], paths['json'], tokens_path)
-        case _:
-            print('Wrong mode, options: train, test')
+    if modes[mode] == 0:
+        bpe.train(paths['txt'], paths['json'], 10)
+    elif modes[mode] == 1:
+        tokens_path = join(folders['txt'], '.'.join(['tokens', 'txt']))
+        bpe.test(paths['txt'], paths['json'], tokens_path)
 
 
 if __name__ == '__main__':
