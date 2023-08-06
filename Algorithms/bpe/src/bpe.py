@@ -5,6 +5,7 @@ from json import dump, load
 from collections import Counter
 from itertools import tee
 from re import sub
+from trie import Trie
 
 
 class BPE:
@@ -66,23 +67,11 @@ class BPE:
             dump(self.get_tokens(vocab), f, indent=4)
 
     def match_tokens(self, sentences, token_dict):
+        trie = Trie([x for x, _ in token_dict.items()])
         result = []
         for sentence in sentences:
-            start = 0
-            while start < len(sentence):
-                matched_token = None
-                for token, _ in token_dict.items():
-                    if not sentence.startswith(token, start):
-                        continue
-                    if matched_token is None or len(token) > len(matched_token):
-                        matched_token = token
-                if matched_token is not None:
-                    result.append(token_dict[matched_token])
-                    start += len(matched_token)
-                else:
-                    result.append(sentence[start])
-                    start += 1
-        return result
+            result += trie.match(sentence)
+        return [token_dict.get(x, x) for x in result]
 
     def test(self, text_path, json_path, tokens_path):
         with open(text_path, 'r', encoding='utf-8') as f:
