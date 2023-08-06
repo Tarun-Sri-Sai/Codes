@@ -1,16 +1,24 @@
-import os
+from os.path import join
+from pandas import read_csv
+from re import sub
 
 
 def main() -> None:
-    print(f"CWD: {os.getcwd()}")
-    input_csv_path: str = input("Input .csv: ")
-    output_txt_path: str = input("Output .txt: ")
-    with open(output_txt_path, "w") as txt_out:
-        with open(input_csv_path, "r", encoding="utf-8") as csv_in:
-            for line in csv_in.readlines():
-                line = line.strip().replace("<br />", "\n").replace("\"", "").replace(",", " ").replace("  ", ", ")
-                txt_out.write(
-                    "".join(ch for ch in line if str.isascii(ch)) + "\n")
+    train_csv_path = join('..', 'csv', 'train.csv')
+    train_df = read_csv(train_csv_path)
+    train_txt = '\n'.join(train_df['text'].apply(
+        lambda x: x.replace('<br />', '\n')))
+    train_txt_path = join('..', 'txt', 'train.txt')
+    with open(train_txt_path, 'w', encoding='utf-8') as f:
+        f.write(sub('[\n]+', '\n', train_txt))
+
+    test_csv_path = join('..', 'csv', 'test.csv')
+    test_df = read_csv(test_csv_path)
+    test_txt = '\n'.join(test_df['text'].apply(
+        lambda x: x.replace('<br />', '\n')))
+    test_txt_path = join('..', 'txt', 'test.txt')
+    with open(test_txt_path, 'w', encoding='utf-8') as f:
+        f.write(sub('[\n]+', '\n', test_txt))
 
 
 if __name__ == "__main__":
