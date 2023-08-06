@@ -117,7 +117,7 @@ def main():
     }
     bpe = BPE()
     if mode == 'train':
-        bpe.train(paths['txt'], paths['json'], 10)
+        bpe.train(paths['txt'], paths['json'])
     elif mode == 'test':
         tokens_path = join(folders['txt'], '.'.join(['tokens', 'txt']))
         bpe.test(paths['txt'], paths['json'], tokens_path)
