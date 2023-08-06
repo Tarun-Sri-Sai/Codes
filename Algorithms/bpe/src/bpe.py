@@ -43,6 +43,15 @@ class BPE:
             new_token_seq = token_seq.replace(bigram_key, repl)
             new_vocab[new_token_seq] = freq
         return new_vocab
+    
+    def index(self, items):
+        return {key: i for i, key in enumerate(items)}
+
+    def get_tokens(self, vocab):
+        tokens = []
+        for token_seq in vocab:
+            tokens.extend(token_seq.split())
+        return self.index([*set(tokens)])
 
     def train(self, text_path, json_path, iterations=100):
         with open(text_path, 'r', encoding='utf-8') as f:
@@ -54,16 +63,7 @@ class BPE:
                 best_pair = max(pairs, key=pairs.get)
                 vocab = self.merge_vocab(vocab, best_pair)
         with open(json_path, 'w', encoding='utf-8') as f:
-            dump(vocab, f, indent=4)
-
-    def index(self, items):
-        return {key: i for i, key in enumerate(items)}
-
-    def get_tokens(self, vocab):
-        tokens = []
-        for token_seq in vocab:
-            tokens.extend(token_seq.split())
-        return self.index([*set(tokens)])
+            dump(self.get_tokens(vocab), f, indent=4)
 
     def match_tokens(self, sentences, token_dict):
         result = []
@@ -89,7 +89,7 @@ class BPE:
             sentences = f.readlines()
             sentences = self.process(sentences)
         with open(json_path, 'r', encoding='utf-8') as f:
-            tokens = self.get_tokens(load(f))
+            tokens = load(f)
             tokenized = self.match_tokens(sentences, tokens)
         with open(tokens_path, 'w', encoding='utf-8') as f:
             f.write('|'.join(str(x) for x in tokenized))
@@ -113,7 +113,7 @@ def main():
     convert(mode)
     paths = {
         'txt': join(folders['txt'], '.'.join([mode, 'txt'])),
-        'json': join(folders['json'], '.'.join(['vocab', 'json']))
+        'json': join(folders['json'], '.'.join(['tokens', 'json']))
     }
     bpe = BPE()
     if mode == 'train':
