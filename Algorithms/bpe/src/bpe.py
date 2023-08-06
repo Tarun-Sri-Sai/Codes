@@ -95,19 +95,20 @@ class BPE:
             f.write('|'.join(str(x) for x in tokenized))
 
 
+def index(items):
+    return {key: i for i, key in enumerate(items)}
+
+
 def main():
     folders = {ext: join('..', ext) for ext in ['txt', 'json']}
     for _, folder in folders.items():
         if isdir(folder):
             continue
         mkdir(folder)
-    modes = {
-        'train': 0,
-        'test': 1
-    }
+    modes = index(['train', 'test'])
     mode = input('Enter training mode: ')
     if mode not in modes:
-        print('Wrong mode, options: train, test')
+        print(f'Wrong mode, options: {",".join(modes)}')
         return
     convert(mode)
     paths = {
@@ -115,9 +116,9 @@ def main():
         'json': join(folders['json'], '.'.join(['vocab', 'json']))
     }
     bpe = BPE()
-    if modes[mode] == 0:
+    if mode == 'train':
         bpe.train(paths['txt'], paths['json'], 10)
-    elif modes[mode] == 1:
+    elif mode == 'test':
         tokens_path = join(folders['txt'], '.'.join(['tokens', 'txt']))
         bpe.test(paths['txt'], paths['json'], tokens_path)
 
