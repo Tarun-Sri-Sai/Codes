@@ -1,87 +1,123 @@
-import json
-import os
-import re
-from typing import List, Dict, Tuple
-from collections import  Counter
+from os.path import join, isdir
+from os import mkdir
+from csv_to_txt import convert
+from json import dump, load
+from collections import Counter
 from itertools import tee
-import time
+from re import sub
 
 
 class BPE:
-    def __init__(self, corpus: List[str], vocab_path: str, iterations: int) -> None:
-        self.vocab_json_path: str = vocab_path
-        self.vocab: Dict[str, int] = {}
-        try:
-            with open(self.vocab_json_path, "r") as vocab_reader:
-                self.vocab = json.load(vocab_reader)
-        except (json.decoder.JSONDecodeError, FileNotFoundError):
-            pass
+    def process(self, sentences):
+        for i, sentence in enumerate(sentences):
+            sentences[i] = sub(r'\s+', '_', sentence.strip()) + '^'
+        return sentences
 
-        for sentence in corpus:
-            sentence = re.sub("[ ]+", "_", sentence.strip())
-            sentence += "^"
+    def characterize_tokens(self, string):
+        return ' '.join(ch for ch in string)
+
+    def build_vocab(self, sentences):
+        vocab = {}
+        for sentence in sentences:
             key = self.characterize_tokens(sentence)
-            self.vocab[key] = self.vocab.get(key, 0) + 1
-
-        print()
-        for i in range(iterations):
-            self.rank_pairs()
-            best_pair: Tuple[str, str] = max(self.pairs, key=self.pairs.get)
-            self.merge_vocab(best_pair)
-            print(f"Best pair in iteration {i + 1}: {best_pair}")
-
-        with open(self.vocab_json_path, "w") as json_writer:
-            json.dump(self.vocab, json_writer, indent=4)
-
-    def characterize_tokens(self, string: str) -> str:
-        return " ".join(ch for ch in string)
-
-    def get_tokens(self) -> List[str]:
-        tokens: List[str] = []
-        for token_seq in self.vocab:
-            tokens.extend(token_seq.split())
-        return list(set(tokens))
+            vocab[key] = vocab.get(key, 0) + 1
+        return vocab
 
     def pairwise(self, iterable):
         a, b = tee(iterable)
         next(b, None)
         return zip(a, b)
 
-    def rank_pairs(self) -> None:
-        pairs: Counter = Counter()
-        for token_seq in self.vocab:
+    def rank_pairs(self, vocab):
+        pairs = Counter()
+        for token_seq in vocab:
             tokens = token_seq.split()
             pairs.update(self.pairwise(tokens))
+        return dict(pairs)
 
-        self.pairs: Dict[Tuple[str, str], int] = dict(pairs)
-
-    def merge_vocab(self, best_pair: Tuple[str, str]) -> None:
-        vocab: Dict[str, int] = {}
-        bigram_key: str = " ".join(best_pair)
-        repl: str = "".join(best_pair)
-        for token_seq, freq in self.vocab.items():
+    def merge_vocab(self, vocab, best_pair):
+        new_vocab = {}
+        bigram_key = ' '.join(best_pair)
+        repl = ''.join(best_pair)
+        for token_seq, freq in vocab.items():
             new_token_seq = token_seq.replace(bigram_key, repl)
-            vocab[new_token_seq] = freq
+            new_vocab[new_token_seq] = freq
+        return new_vocab
 
-        self.vocab = vocab
+    def train(self, text_path, json_path, iterations=100):
+        with open(text_path, 'r', encoding='utf-8') as f:
+            sentences = f.readlines()
+            sentences = self.process(sentences)
+            vocab = self.build_vocab(sentences)
+            for _ in range(iterations):
+                pairs = self.rank_pairs(vocab)
+                best_pair = max(pairs, key=pairs.get)
+                vocab = self.merge_vocab(vocab, best_pair)
+        with open(json_path, 'w', encoding='utf-8') as f:
+            dump(vocab, f, indent=4)
+
+    def index(self, items):
+        return {key: i for i, key in enumerate(items)}
+
+    def get_tokens(self, vocab):
+        tokens = []
+        for token_seq in vocab:
+            tokens.extend(token_seq.split())
+        return self.index([*set(tokens)])
+
+    def match_tokens(self, sentences, token_dict):
+        result = []
+        for sentence in sentences:
+            start = 0
+            while start < len(sentence):
+                matched_token = None
+                for token, _ in token_dict.items():
+                    if not sentence.startswith(token, start):
+                        continue
+                    if matched_token is None or len(token) > len(matched_token):
+                        matched_token = token
+                if matched_token is not None:
+                    result.append(token_dict[matched_token])
+                    start += len(matched_token)
+                else:
+                    result.append(sentence[start])
+                    start += 1
+        return result
+
+    def test(self, text_path, json_path, tokens_path):
+        with open(text_path, 'r', encoding='utf-8') as f:
+            sentences = f.readlines()
+            sentences = self.process(sentences)
+        with open(json_path, 'r', encoding='utf-8') as f:
+            tokens = self.get_tokens(load(f))
+            tokenized = self.match_tokens(sentences, tokens)
+        with open(tokens_path, 'w', encoding='utf-8') as f:
+            f.write('|'.join(str(x) for x in tokenized))
 
 
-def main() -> None:
-    print(f"CWD: {os.getcwd()}")
-    corpus_path: str = input("Corpus .txt path: ")
-    vocab_path: str = input("Vocab .json path: ")
-    iterations: int = int(input("Iterations: "))
-    tokens_path: str = input("Tokens .txt path: ")
-    with open(tokens_path, "w") as t_out:
-        with open(corpus_path, "r") as c_in:
-            start_time = time.perf_counter()
-            bpe = BPE(c_in.readlines(), vocab_path, iterations)
-            tokens = bpe.get_tokens()
-            end_time = time.perf_counter()
-            print(f"Time taken: {end_time - start_time:.3f} seconds")
-            for token in tokens:
-                t_out.write(token + "\n")
+def main():
+    folders = {ext: join('..', ext) for ext in ['txt', 'json']}
+    for _, folder in folders.items():
+        if isdir(folder):
+            continue
+        mkdir(folder)
+
+    mode = input('Enter training mode: ')
+    convert(mode)
+    paths = {
+        'txt': join(folders['txt'], '.'.join([mode, 'txt'])),
+        'json': join(folders['json'], '.'.join(['vocab', 'json']))
+    }
+    bpe = BPE()
+    match mode:
+        case 'train':
+            bpe.train(paths['txt'], paths['json'], 10)
+        case 'test':
+            tokens_path = join(folders['txt'], '.'.join(['tokens', 'txt']))
+            bpe.test(paths['txt'], paths['json'], tokens_path)
+        case _:
+            print('Wrong mode, options: train, test')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
