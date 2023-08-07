@@ -93,7 +93,7 @@ def main():
     modes = {'train', 'test'}
     mode = input('Enter training mode: ')
     if mode not in modes:
-        print(f'Wrong mode, options: {",".join(modes)}')
+        print(f'Wrong mode, options: {", ".join(modes)}')
         return
     convert(mode)
     paths = {
