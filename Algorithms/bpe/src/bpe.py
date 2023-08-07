@@ -84,17 +84,13 @@ class BPE:
             f.write('|'.join(str(x) for x in tokenized))
 
 
-def index(items):
-    return {key: i for i, key in enumerate(items)}
-
-
 def main():
     folders = {ext: join('..', ext) for ext in ['txt', 'json']}
     for _, folder in folders.items():
         if isdir(folder):
             continue
         mkdir(folder)
-    modes = index(['train', 'test'])
+    modes = {'train', 'test'}
     mode = input('Enter training mode: ')
     if mode not in modes:
         print(f'Wrong mode, options: {",".join(modes)}')
