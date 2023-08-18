@@ -7,5 +7,5 @@ int main()
     {
         number += i;
     }
-    std::cout << number << '\n';
+    std::cout << number << '\r';
 }

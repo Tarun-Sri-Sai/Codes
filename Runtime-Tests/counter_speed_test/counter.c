@@ -7,5 +7,5 @@ int main()
     {
         number += i;
     }
-    printf("%lld\n", number);
+    printf("%lld\r", number);
 }
