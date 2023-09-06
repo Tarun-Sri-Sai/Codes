@@ -1,6 +1,7 @@
 from json import load, dump
 from os import path
 from locale import setlocale, LC_MONETARY, currency
+import sys
 
 
 def to_curr(x):
@@ -10,11 +11,11 @@ def to_curr(x):
 
 
 class TaxBrackets:
-    def __init__(self, file_path):
+    def __init__(self, file_path, reread=False):
         self.file_path = file_path
         self.tax_brackets = []
         self.load()
-        if not self.tax_brackets:
+        if not self.tax_brackets or reread:
             self.read()
         self.save()
 
@@ -65,8 +66,9 @@ class TaxBrackets:
 
 
 def main():
+    args = sys.argv
     file_path = path.join('.', 'taxes.json')
-    tb = TaxBrackets(file_path)
+    tb = TaxBrackets(file_path, reread=(len(args) > 1 and args[1] == '--reread'))
     income = int(input('Income: '))
     tax = tb.calculate_tax(income)
     print(f'Tax for {to_curr(income)}: {to_curr(tax)}')
