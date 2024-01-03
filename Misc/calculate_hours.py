@@ -116,13 +116,13 @@ def to_multipliers_dict(multipliers_json: str) -> dict:
     try:
         parsed_dict = loads(multipliers_json)
     except ValueError:
-        parser.exit_on_error('Bad multipliers argument')
+        parser.exit_on_error('Bad multipliers_file content')
     
     try:
         return {x: arithmetic_eval(y)
                 for x, y in parsed_dict.items()}
     except ValueError:
-        parser.exit_on_error('Illegal multipliers argument')
+        parser.exit_on_error('Illegal multipliers_file content')
 
 
 def get_watch_time(md_text: str, text_pattern: str, split_pattern: str,
