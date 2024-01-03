@@ -100,7 +100,7 @@ def format_hours(hours: float) -> str:
     return f'Watch time: {int(hours)} hours{minutes_string}'
 
 
-def arithmetic_eval(multipliers_value):
+def arithmetic_eval(multipliers_value: str) -> float:
     if not match(r'^[0-9()+\-*/. \t\n]*$', multipliers_value):
         raise ValueError
 
@@ -109,7 +109,10 @@ def arithmetic_eval(multipliers_value):
     if not operators_used.issubset(allowed_operators):
         raise ValueError
 
-    return eval(multipliers_value)
+    try:
+        return eval(multipliers_value)
+    except:
+        raise ValueError
 
 
 def to_multipliers_dict(multipliers_json: str) -> dict:
