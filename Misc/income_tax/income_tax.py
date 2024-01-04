@@ -7,12 +7,12 @@ setlocale(LC_ALL, 'en-IN')
 
 
 class IncomeTax:
-    def __init__(self, tax_brackets_file):
+    def __init__(self, tax_brackets_file: str):
         self.__tax_brackets = None
 
         self.__get_tax_brackets(tax_brackets_file)
 
-    def __get_tax_brackets(self, tax_brackets_file):
+    def __get_tax_brackets(self, tax_brackets_file: str):
         self.__tax_brackets = []
         data = read_csv(tax_brackets_file)
         for _, row in data.iterrows():
@@ -22,7 +22,7 @@ class IncomeTax:
                 float(row['income_tax_percent'])
             ))
 
-    def calculate(self, income_pa):
+    def calculate(self, income_pa: float) -> int:
         result = 0
 
         for (lower_limit_pa,
@@ -49,17 +49,22 @@ def parse_arguments():
     if not (args.tax_brackets_file and args.income):
         parser.print_help()
         exit()
+    
+    return {
+        'tax_brackets_file': args.tax_brackets_file,
+        'income': args.income
+    }
 
 
-def format_currency(value):
+def format_currency(value: int) -> str:
     return currency(value, grouping=True)
 
 
 def main():
     arguments = parse_arguments()
-    income_tax = IncomeTax(arguments.tax_brackets_file)
+    income_tax = IncomeTax(arguments['tax_brackets_file'])
     formatted_string = format_currency(
-        income_tax.calculate(arguments.income))
+        income_tax.calculate(arguments['income']))
     print(formatted_string)
 
 
