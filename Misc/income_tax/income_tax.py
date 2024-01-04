@@ -43,8 +43,12 @@ def parse_arguments():
                         dest='tax_brackets_file', type=str)
     parser.add_argument('--income', '-i', 
                         dest='income', type=float)
+
+    args = parser.parse_args()
     
-    return parser.parse_args()
+    if not (args.tax_brackets_file and args.income):
+        parser.print_help()
+        exit()
 
 
 def format_currency(value):
