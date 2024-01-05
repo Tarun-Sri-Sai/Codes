@@ -12,6 +12,7 @@
 
 #define min(a, b) (a < b ? a : b)
 #define abs_diff(x, y) (x > y ? x - y : y - x)
+#define hyphens(x) (28 + x * 3)
 
 byte *corrupt_string(byte *string, int length, int bits, int chance);
 void print_string(byte *string, int length);
@@ -43,7 +44,7 @@ int main(int argc, char **argv)
 
     debug_corruption(corrupted, input, input_length);
 
-    printf("\n%s\nChecksum result\t\t: ", make_string('-', 0x80));
+    printf("\n%s\nChecksum result\t\t: ", make_string('-', hyphens(input_length)));
     if (is_corrupt(input, corrupted, input_length))
         printf("String is corrupted\n");
     else
@@ -129,7 +130,7 @@ void debug_corruption(byte *target, byte *source, int length)
         diff_string[i] = diff;
     }
 
-    printf("\n%s\nCorrupted parts\t\t: ", make_string('-', 0x80));
+    printf("\n%s\nCorrupted parts\t\t: ", make_string('-', hyphens(length)));
     print_string(diff_string, length);
     printf("\n");
 }
