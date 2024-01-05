@@ -1,11 +1,12 @@
-from os import path, listdir
+from os.path import join, isdir
+from os import listdir
 
 
 def recur_count(folder):
     lines_of_code = 0
     for item in listdir(folder):
-        item_path = path.join(folder, item)
-        if path.isdir(item_path):
+        item_path = join(folder, item)
+        if isdir(item_path):
             lines_of_code += recur_count(item_path)
         else:
             file_loc = len(open(item_path, 'r', encoding='utf-8').readlines())
