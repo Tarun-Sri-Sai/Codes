@@ -1,3 +1,4 @@
 .vscode/
 .venv
 *.exe
+__pycache__/
