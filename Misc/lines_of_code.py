@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from os import listdir
 from os.path import join, isdir, splitext
-from re import match
+from re import search
 
 
 class LinesOfCode:
@@ -42,7 +42,7 @@ class LinesOfCode:
         
     def _is_match(self, argument_key, string):
         pattern = self._arguments[argument_key]
-        return pattern and match(pattern, string)
+        return pattern and search(pattern, string)
 
     def _get_loc(self, folder: str) -> int:
         lines_of_code = 0
