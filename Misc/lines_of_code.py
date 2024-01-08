@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from os import listdir
 from os.path import join, isdir, splitext
-from re import search
+from re import fullmatch
 
 
 class LinesOfCode:
@@ -43,7 +43,7 @@ class LinesOfCode:
 
     def _is_match(self, argument_key: str, string: str) -> bool:
         pattern = self._arguments[argument_key]
-        return pattern and search(pattern, string)
+        return pattern and fullmatch(pattern, string) is not None
 
     def _get_lines_of_code(self, folder: str, indent: str) -> int:
         lines_of_code = 0
@@ -70,7 +70,7 @@ class LinesOfCode:
 
             if self._is_match('exclude_exts', splitext(item)[1]):
                 continue
-            if self._is_match('exclude_files', item_path):
+            if self._is_match('exclude_files', item):
                 continue
 
             with open(item_path, encoding='utf-8', errors='ignore') as f:
