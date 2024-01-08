@@ -33,6 +33,7 @@ class LinesOfCode:
             help='Specify the exclude pattern for directories')
 
         args = parser.parse_args()
+
         self._arguments = {
             'path': args.path,
             'exclude_files': args.exclude_files or '',
@@ -40,13 +41,11 @@ class LinesOfCode:
             'exclude_dirs': args.exclude_dirs or ''
         }
 
-    def _is_match(self, argument_key, string):
+    def _is_match(self, argument_key: str, string: str) -> bool:
         pattern = self._arguments[argument_key]
         return pattern and search(pattern, string)
 
-    def _get_loc(self, folder: str, indent: str) -> tuple[int, list[str]]:
-        logs = []
-
+    def _get_lines_of_code(self, folder: str, indent: str) -> int:
         lines_of_code = 0
 
         items = listdir(folder)
@@ -63,12 +62,10 @@ class LinesOfCode:
                 if self._is_match('exclude_dirs', item_path):
                     continue
 
-                logs.append(f'{indent}{prefix}{item}')
+                print(f'{indent}{prefix}{item}')
 
-                next_lines_of_code, next_logs = self._get_loc(
+                lines_of_code += self._get_lines_of_code(
                     item_path, indent + next_indent)
-                lines_of_code += next_lines_of_code
-                logs += next_logs
                 continue
 
             if self._is_match('exclude_exts', splitext(item)[1]):
@@ -79,24 +76,23 @@ class LinesOfCode:
             with open(item_path, encoding='utf-8', errors='ignore') as f:
                 file_lines_of_code = len(f.readlines())
 
-            logs.append(f'{indent}{prefix}{item}: {file_lines_of_code} '
-                        'lines of code')
+            print(f'{indent}{prefix}{item}: {file_lines_of_code} '
+                  'lines of code')
 
             lines_of_code += file_lines_of_code
 
-        return lines_of_code, logs
+        return lines_of_code
 
-    def get(self) -> int:
-        loc, logs = self._get_loc(self._arguments['path'], '')
-        return [*logs, f'\nTotal: {loc} lines of code']
+    def get(self) -> list[str]:
+        loc = self._get_lines_of_code(self._arguments['path'], '')
+        print(f'\nTotal {loc} lines of code')
 
 
 def main():
     loc = LinesOfCode()
 
     loc.parse_arguments()
-    logs = loc.get()
-    print('\n'.join(logs))
+    loc.get()
 
 
 if __name__ == '__main__':
