@@ -59,7 +59,7 @@ class LinesOfCode:
             next_indent = '    ' if is_last else '│   '
 
             if isdir(item_path):
-                if self._is_match('exclude_dirs', item_path):
+                if self._is_match('exclude_dirs', item):
                     continue
 
                 print(f'{indent}{prefix}{item}')
