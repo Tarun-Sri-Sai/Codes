@@ -14,9 +14,7 @@ class Parser:
 
     def get_arguments(self) -> dict[str, Any]:
         self._parser.add_argument(
-            '-f',
-            type=str,
-            dest='md_file',
+            'md_file',
             help='Specify the markdown file containing the watchlist')
         self._parser.add_argument(
             '-t',
@@ -41,9 +39,6 @@ class Parser:
                  '(string, string) pairs')
 
         args = self._parser.parse_args()
-
-        if args.md_file is None:
-            self.exit_on_error('Bad md_file')
 
         return {
             'md_file': args.md_file,
