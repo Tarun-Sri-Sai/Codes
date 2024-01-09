@@ -48,7 +48,11 @@ class LinesOfCode:
     def _get_lines_of_code(self, folder: str, indent: str) -> int:
         lines_of_code = 0
 
-        items = listdir(folder)
+        try:
+            items = listdir(folder)
+        except Exception:
+            return 0
+
         n_items = len(items)
 
         for i, item in enumerate(items):
@@ -73,8 +77,11 @@ class LinesOfCode:
             if self._is_match('exclude_files', item):
                 continue
 
-            with open(item_path, encoding='utf-8', errors='ignore') as f:
-                file_lines_of_code = len(f.readlines())
+            try:
+                with open(item_path, 'r', encoding='utf-8') as f:
+                    file_lines_of_code = len(f.readlines())
+            except Exception:
+                continue
 
             print(f'{indent}{prefix}{item}: {file_lines_of_code} '
                   'lines of code')
