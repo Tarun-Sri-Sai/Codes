@@ -90,7 +90,7 @@ class LinesOfCode:
 
         return lines_of_code
 
-    def get(self) -> list[str]:
+    def get(self):
         loc = self._get_lines_of_code(self._arguments['path'], '')
         print(f'\nTotal {loc} lines of code')
 
