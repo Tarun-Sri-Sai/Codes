@@ -4,6 +4,11 @@ backend:
     - cd backend
     - npm init -y
     - npm install express mongoose nodemon
+  create:
+    ./.gitgnore: |
+      node_modules
+    ./index.js: |
+      console.log("MERN Config")
 frontend:
   commands:
     - npx create-vite frontend --template react
@@ -12,6 +17,11 @@ frontend:
     - npm install tailwindcss postcss autoprefixer
     - npx tailwindcss init -y
   files:
+    ./.gitignore: |
+      node_modules
+      dist
+      dist-ssr
+      *.local
     ./package.json: |
       {
         ...,
