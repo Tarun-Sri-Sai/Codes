@@ -10,6 +10,7 @@ class InputParser:
         self._subparsers = None
         self._incometax_parser = None
         self._rdeposit_parser = None
+        self._fdeposit_parser = None
 
     @property
     def parser(self):
@@ -57,6 +58,23 @@ class InputParser:
             'interest', type=float,
             help='Interest rate p.a.')
         self._rdeposit_parser.add_argument(
+            'period', type=int,
+            help='Calculation period in months')
+        
+    def add_fdeposit_parser(self):
+        if self._fdeposit_parser is not None:
+            return
+
+        self._fdeposit_parser = self.subparsers.add_parser(
+            'fdeposit',
+            help='Calculate the fixed deposit')
+        self._fdeposit_parser.add_argument(
+            'principal', type=float,
+            help='Principal amount')
+        self._fdeposit_parser.add_argument(
+            'interest', type=float,
+            help='Interest rate p.a.')
+        self._fdeposit_parser.add_argument(
             'period', type=int,
             help='Calculation period in months')
 
@@ -113,6 +131,20 @@ class RDeposit:
             total_interest += interest_this_month
             total_amount += interest_this_month
         return total_interest
+    
+
+class FDeposit:
+    def calculate_interest(self, principal, annual_interest_rate, num_months):
+        getcontext().prec = 28
+        monthly_interest_rate = (Decimal(annual_interest_rate)
+                                 / Decimal(12 * 100))
+        total_amount = Decimal(principal)
+        total_interest = Decimal(0)
+        for _ in range(1, num_months + 1):
+            interest_this_month = total_amount * monthly_interest_rate
+            total_interest += interest_this_month
+            total_amount += interest_this_month
+        return total_interest
 
 
 def get_income_tax(args):
@@ -129,15 +161,24 @@ def get_rdeposit(args):
     return f'{result:.2f}'
 
 
+def get_fdeposit(args):
+    f_deposit = FDeposit()
+    result = f_deposit.calculate_interest(
+        args['principal'], args['interest'], args['period'])
+    return f'{result:.2f}'
+
+
 def main():
     input_parser = InputParser()
     input_parser.add_incometax_parser()
     input_parser.add_rdeposit_parser()
+    input_parser.add_fdeposit_parser()
     args = input_parser.args
 
     subcommands = {
         'incometax': get_income_tax,
-        'rdeposit': get_rdeposit
+        'rdeposit': get_rdeposit,
+        'fdeposit': get_fdeposit
     }
 
     method = subcommands[args['subcommand']]
