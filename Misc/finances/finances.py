@@ -60,7 +60,7 @@ class InputParser:
         self._rdeposit_parser.add_argument(
             'period', type=int,
             help='Calculation period in months')
-        
+
     def add_fdeposit_parser(self):
         if self._fdeposit_parser is not None:
             return
@@ -91,14 +91,12 @@ class IncomeTax:
         self._tax_brackets = None
 
     def set_tax_brackets(self, tax_brackets_file: str):
-        self._tax_brackets = []
         data = read_csv(tax_brackets_file)
-        for _, row in data.iterrows():
-            self._tax_brackets.append((
-                Decimal(row['lower_limit_pa']),
-                Decimal(row['upper_limit_pa']),
-                Decimal(row['income_tax_percent'])
-            ))
+        self._tax_brackets = [(
+            Decimal(row['lower_limit_pa']),
+            Decimal(row['upper_limit_pa']),
+            Decimal(row['income_tax_percent'])
+        ) for _, row in data.iterrows()]
 
     def calculate(self, income_pa):
         result = Decimal(0)
@@ -111,7 +109,8 @@ class IncomeTax:
             income_tax_percent = Decimal(income_tax_percent)
 
             if Decimal(income_pa) < upper_limit_pa:
-                result += ((Decimal(income_pa) - lower_limit_pa) * income_tax_percent)
+                result += ((Decimal(income_pa) - lower_limit_pa)
+                           * income_tax_percent)
                 return result / Decimal(100)
             result += ((upper_limit_pa - lower_limit_pa) * income_tax_percent)
         return result / Decimal(100)
@@ -131,7 +130,7 @@ class RDeposit:
             total_interest += interest_this_month
             total_amount += interest_this_month
         return total_interest
-    
+
 
 class FDeposit:
     def calculate_interest(self, principal, annual_interest_rate, num_months):
