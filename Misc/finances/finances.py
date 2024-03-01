@@ -95,9 +95,9 @@ class IncomeTax:
         data = read_csv(tax_brackets_file)
         for _, row in data.iterrows():
             self._tax_brackets.append((
-                float(row['lower_limit_pa']),
-                float(row['upper_limit_pa']),
-                float(row['income_tax_percent'])
+                Decimal(row['lower_limit_pa']),
+                Decimal(row['upper_limit_pa']),
+                Decimal(row['income_tax_percent'])
             ))
 
     def calculate(self, income_pa):
@@ -110,8 +110,8 @@ class IncomeTax:
             upper_limit_pa = Decimal(upper_limit_pa)
             income_tax_percent = Decimal(income_tax_percent)
 
-            if income_pa < upper_limit_pa:
-                result += ((income_pa - lower_limit_pa) * income_tax_percent)
+            if Decimal(income_pa) < upper_limit_pa:
+                result += ((Decimal(income_pa) - lower_limit_pa) * income_tax_percent)
                 return result / Decimal(100)
             result += ((upper_limit_pa - lower_limit_pa) * income_tax_percent)
         return result / Decimal(100)
