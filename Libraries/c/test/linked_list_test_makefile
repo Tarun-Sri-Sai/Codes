@@ -1,0 +1,17 @@
+CC=gcc
+CPPFLAGS=-Wall -Wextra -Wpedantic -Werror
+
+
+all: output/linked_list_test.exe
+
+output/linked_list_test.exe: obj/linked_list_test.o obj/linked_list.o obj/list_node.o
+	${CC} $^ -o $@
+
+obj/%.o: ../linked_list/%.c
+	${CC} ${CPPFLAGS} -c $^ -o $@
+
+obj/%.o: %.c
+	${CC} ${CPPFLAGS} -c $^ -o $@
+
+clean:
+	del /F /Q obj\\*.o output\\*.exe
