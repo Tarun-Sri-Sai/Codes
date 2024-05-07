@@ -18,7 +18,10 @@ def parse_arguments() -> tuple[dict[str, typing.Any], argparse.ArgumentParser]:
             description='Creates the next unit directory for a subject'),
         'prompts': sub_parsers.add_parser(
             'prompts',
-            description='Generates ChatGPT prompts for topics in topics.yml')
+            description='Generates ChatGPT prompts for topics in topics.yml'),
+        'print': sub_parsers.add_parser(
+            'print',
+            description='Print the ChatGPT response to unit file')
     }
 
     subcommands['complete'].add_argument('subject_name',
@@ -36,6 +39,11 @@ def parse_arguments() -> tuple[dict[str, typing.Any], argparse.ArgumentParser]:
     subcommands['prompts'].add_argument('--prompt', '-p',
                                         dest='optional_prompt',
                                         help='Optional prompt')
+    subcommands['print'].add_argument('subject_name',
+                                      help='Name of the subject')
+    subcommands['print'].add_argument('unit',
+                                      type=int,
+                                      help='Unit number')
 
     return vars(parser.parse_args()), parser
 
@@ -60,9 +68,9 @@ def combine_units(args: dict[str, typing.Any],
                 try:
                     with open(file, 'r', encoding='utf-8') as reader:
                         text = reader.read()
-                        writer.write(
-                            text.replace(f'# {args["subject_name"].upper()}\n',
-                                         ''))
+                        writer.write(text.replace(
+                            f'# {args["subject_name"].upper()}\n',
+                            ''))
                     count += 1
                 except:
                     break
@@ -77,13 +85,12 @@ def combine_units(args: dict[str, typing.Any],
 def add_unit(args: dict[str, typing.Any],
              parser: argparse.ArgumentParser) -> None:
     try:
-        for i in range(5):
+        for i in range(MAX_UNITS := 1000):
             dest_dir = os.path.join(args['subject_name'], f'unit_{i + 1}')
             os.makedirs(dest_dir, exist_ok=True)
 
             dest_file = os.path.join(dest_dir, f'unit_{i + 1}.md')
             if os.path.isfile(dest_file):
-                print(f'{dest_file} already exists')
                 continue
 
             with open(dest_file, 'w') as f:
@@ -91,7 +98,9 @@ def add_unit(args: dict[str, typing.Any],
                 print(f'## Unit-{i + 1}\n', file=f)
 
             print(f'Generated {dest_file}')
-            break
+            return
+
+        raise ValueError(f"{MAX_UNITS} units is too much. Don't you think?")
 
     except Exception as e:
         print(f'Error trying to add unit due to {e}')
@@ -113,7 +122,7 @@ def generate_prompts(args: dict[str, typing.Any],
         input_file = args['input_file'] or 'topics.yml'
         if not os.path.isfile(input_file):
             raise ValueError(f'{input_file} does not exist')
-        
+
         optional_prompt = args.get('optional_prompt', None)
         start = args['start']
 
@@ -142,7 +151,7 @@ def generate_prompts(args: dict[str, typing.Any],
 
         print(f'Generated {len(prompts)} prompts')
 
-        output_file = args['output_file'] or 'prompts.txt'
+        output_file = args.get('output_file', 'prompts.txt')
         ensure_dir_path_exists(output_file)
 
         with open(output_file, 'w') as f:
@@ -154,13 +163,45 @@ def generate_prompts(args: dict[str, typing.Any],
         raise
 
 
+def print_to_unit(args: dict[str, typing.Any],
+                  parser: argparse.ArgumentParser) -> None:
+    try:
+        unit_no = args['unit']
+        dest_dir = os.path.join(args['subject_name'],
+                                f'unit_{unit_no}')
+        os.makedirs(dest_dir, exist_ok=True)
+
+        dest_file = os.path.join(dest_dir, f'unit_{unit_no}.md')
+        if not os.path.isfile(dest_file):
+            raise ValueError(f'Unit-{unit_no} is not there, '
+                             "generate it using 'unit' subcommand")
+
+        input_file = args.get('input_file', 'input.md')
+        if not os.path.isfile(input_file):
+            raise ValueError(f'{input_file} does not exist')
+
+        with open(input_file, 'r', encoding='utf-8') as f:
+            data = f.read()
+
+        data = data.replace('\n#', '\n###')
+
+        with open(dest_file, 'a', encoding='utf-8') as f:
+            print(data, file=f)
+        print(f'Finished writing output from {os.path.basename(input_file)}')
+    except Exception as e:
+        print(f'Error trying to print to unit due to {e}')
+        parser.print_help()
+        raise
+
+
 def main() -> None:
     args, parser = parse_arguments()
 
     subcommand_switch = {
         'complete': combine_units,
         'unit': add_unit,
-        'prompts': generate_prompts
+        'prompts': generate_prompts,
+        'print': print_to_unit,
     }
     try:
         subcommand_switch[args['subcommand']](args, parser)
