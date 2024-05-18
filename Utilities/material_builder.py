@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from pprint import pprint
 from typing import Any
 import os
-import yaml
+import json
 import sys
 
 
@@ -10,54 +10,57 @@ def parse_arguments() -> tuple[dict[str, Any], ArgumentParser]:
     parser = ArgumentParser(description='Material Builder')
     sub_parsers = parser.add_subparsers(dest='subcommand')
 
-    subcommands = {
-        'complete': sub_parsers.add_parser(
-            'complete',
-            description='Combines all units into one directory for a subject'),
-        'unit': sub_parsers.add_parser(
-            'unit',
-            description='Creates the next unit directory for a subject'),
-        'prompts': sub_parsers.add_parser(
-            'prompts',
-            description='Generates ChatGPT prompts for topics in topics.yml'),
-        'print': sub_parsers.add_parser(
-            'print',
-            description='Print the ChatGPT response to unit file'),
-        'clean': sub_parsers.add_parser(
-            'clean',
-            description='Remove sections from Markdown content')
-    }
-
-    subcommands['complete'].add_argument(
+    # 'complete' subcommand
+    complete = sub_parsers.add_parser(
+        'complete',
+        description='Combines all units into one directory for a subject')
+    complete.add_argument(
         'subject_name',
         help='Name of the subject to generate complete material for')
-    subcommands['unit'].add_argument(
+
+    unit = sub_parsers.add_parser(
+        'unit',
+        description='Creates the next unit directory for a subject')
+    unit.add_argument(
         'subject_name',
         help='Name of the subject to create new unit for')
-    subcommands['prompts'].add_argument(
+
+    # 'prompts' subcommand
+    prompts = sub_parsers.add_parser(
+        'prompts',
+        description='Generates ChatGPT prompts for topics in topics.yml')
+    prompts.add_argument(
         'start',
-        help=('Prefix for the prompt, E.g: "Build a study material '
-              'in Markdown for"'))
-    subcommands['prompts'].add_argument(
+        help='Prefix for the prompt, e.g: Build a study guide in Markdown for')
+    prompts.add_argument(
         '--input', '-i', dest='input_file',
-        help=('A YAML file containing key-value pairs with the topic as key, '
+        help=('A JSON file containing key-value pairs with the topic as key, '
               'and a list of subtopics as its value'))
-    subcommands['prompts'].add_argument(
+    prompts.add_argument(
         '--output', '-o', dest='output_file',
         help='A TXT file to write prompts to')
-    subcommands['prompts'].add_argument(
+    prompts.add_argument(
         '--prompt', '-p', dest='optional_prompt',
         help='Optional suffix for the prompt')
-    subcommands['print'].add_argument(
-        'subject_name', help='Name of the subject to append content to')
-    subcommands['print'].add_argument(
-        'unit', type=int, help='Unit number to append content to')
-    subcommands['clean'].add_argument(
-        'subject', help='Name of the subject to remove sections from')
-    subcommands['clean'].add_argument(
-        'unit', type=int, help='Unit number to remove sections from')
-    subcommands['clean'].add_argument(
-        'headings', help='Comma-separated headings of sections to remove')
+
+    # 'print' subcommand
+    print = sub_parsers.add_parser(
+        'print',
+        description='Print the ChatGPT response to unit file')
+    print.add_argument('subject_name',
+                       help='Name of the subject to append content to')
+    print.add_argument('unit', type=int,
+                       help='Unit number to append content to')
+
+    # 'clean' subcommand
+    clean = sub_parsers.add_parser(
+        'clean', description='Remove sections from Markdown content')
+    clean.add_argument('subject',
+                       help='Name of the subject to remove sections from')
+    clean.add_argument('unit', type=int,
+                       help='Unit number to remove sections from')
+    clean.add_argument('headings',
+                       help='Comma-separated headings of sections to remove')
 
     return vars(parser.parse_args()), parser
 
@@ -129,7 +132,7 @@ def ensure_dir_path_exists(file_path: str) -> None:
 
 def generate_prompts(args: dict[str, Any], parser: ArgumentParser) -> None:
     try:
-        input_file = args['input_file'] or 'topics.yml'
+        input_file = args['input_file'] or 'topics.json'
         if not os.path.isfile(input_file):
             raise ValueError(f'{input_file} does not exist')
 
@@ -138,7 +141,7 @@ def generate_prompts(args: dict[str, Any], parser: ArgumentParser) -> None:
 
         try:
             with open(input_file, 'r') as f:
-                data = yaml.safe_load(f)
+                data = json.load(f)
 
             prompts = []
             for heading, topics in data.items():
