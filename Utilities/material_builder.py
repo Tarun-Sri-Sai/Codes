@@ -36,12 +36,10 @@ def parse_arguments() -> tuple[dict[str, Any], ArgumentParser]:
         '--input', '-i', dest='input_file',
         help=('A JSON file containing key-value pairs with the topic as key, '
               'and a list of subtopics as its value'))
-    prompts.add_argument(
-        '--output', '-o', dest='output_file',
-        help='A TXT file to write prompts to')
-    prompts.add_argument(
-        '--prompt', '-p', dest='optional_prompt',
-        help='Optional suffix for the prompt')
+    prompts.add_argument('--output', '-o', dest='output_file',
+                         help='A TXT file to write prompts to')
+    prompts.add_argument('--prompt', '-p', dest='optional_prompt',
+                         help='Optional suffix for the prompt')
 
     # 'print' subcommand
     print = sub_parsers.add_parser(
