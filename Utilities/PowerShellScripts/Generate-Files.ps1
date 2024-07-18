@@ -6,7 +6,7 @@ param (
 	[int]$Files,
 	
 	[Parameter(Position=2,mandatory=$true)]
-	[int]$Extension
+	[string]$Extension
 )
 
 function Get-RandomString {
