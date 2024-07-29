@@ -27,7 +27,7 @@ $statusLines | ForEach-Object {
 
 # Prepare commit message with the changed file names
 $joinedFileNames = $fileNames -join ','
-$charLimit = 120
+$charLimit = 260
 $trimmedFileNames = if ($joinedFileNames.Length -gt $charLimit) {
     $joinedFileNames.Substring(0, $charLimit - 3) + '...'
 } else {
