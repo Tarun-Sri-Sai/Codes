@@ -5,40 +5,41 @@ if ($statusLines.Length -eq 0) {
     exit 1
 }
 
-# Extract file names
-$fileNames = [System.Collections.Generic.HashSet[string]]::new()
+# Extract file names with their status
+$fileStatuses = [System.Collections.Generic.List[string]]::new()
 $statusLines | ForEach-Object {
-    # Extract file paths
-    $lineParts = $_ -split ' '
-    $remainingWords = $lineParts[1..($lineParts.Count - 1)]
+    # Extract status and file path
+    $status = $_.Substring(0, 2).Trim()
+    $filePath = $_.Substring(2).Trim()
 
-    # Remove quotes
-    $joinedWords = $remainingWords -join ' '
-    $joinedWords = $joinedWords -replace '"', ''
+    # Remove quotes from the file path
+    $filePath = $filePath -replace '"', ''
 
-    # Remove leading directory path
-    $fileName = $joinedWords -replace '.*/', ''
+    # Remove leading directory path to get just the file name
+    $fileName = $filePath -replace '^.*/', ''
+
+    # Add status and file name to the list
     if ($fileName.Length -gt 0) {
-        $fileNames.Add($fileName) | Out-Null
+        $fileStatuses.Add("$status $fileName")
     } else {
-        $fileNames.Add($joinedWords) | Out-Null
+        $fileStatuses.Add("$status $filePath")
     }
 }
 
-# Prepare commit message with the changed file names
-$joinedFileNames = $fileNames -join ','
+# Prepare commit message with the changed file names and their statuses
+$joinedFileStatuses = $fileStatuses -join ', '
 $charLimit = 260
-$trimmedFileNames = if ($joinedFileNames.Length -gt $charLimit) {
-    $joinedFileNames.Substring(0, $charLimit - 3) + '...'
+$trimmedFileStatuses = if ($joinedFileStatuses.Length -gt $charLimit) {
+    $joinedFileStatuses.Substring(0, $charLimit - 3) + '...'
 } else {
-    $joinedFileNames
+    $joinedFileStatuses
 }
-Write-Host "INFO`tCommit message: $trimmedFileNames"
+Write-Host "INFO`tCommit message: $trimmedFileStatuses"
 
 # Stage all files
 git add -A
 Write-Host "INFO`tgit add executed"
 
 # Commit the changes
-git commit -m $trimmedFileNames
+git commit -m $trimmedFileStatuses
 Write-Host "INFO`tgit commit executed"
