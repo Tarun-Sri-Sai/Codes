@@ -1,3 +1,7 @@
+# Stage all files
+git add -A
+Write-Host "INFO`tgit add executed"
+
 # Get status
 $statusLines = git status --short | ForEach-Object { $_.Trim() }
 if ($statusLines.Length -eq 0) {
@@ -35,10 +39,6 @@ $trimmedFileStatuses = if ($joinedFileStatuses.Length -gt $charLimit) {
     $joinedFileStatuses
 }
 Write-Host "INFO`tCommit message: $trimmedFileStatuses"
-
-# Stage all files
-git add -A
-Write-Host "INFO`tgit add executed"
 
 # Commit the changes
 git commit -m $trimmedFileStatuses
