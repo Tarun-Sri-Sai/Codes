@@ -5,7 +5,7 @@ param (
 
 function Get-PasswordFromFile {
     if (-Not (Test-Path -Type Leaf $PasswordFile)) {
-        Write-Error "No password file"
+        Write-Host "$PasswordFile password file does not exist"
         return $null
     }
 
@@ -13,7 +13,7 @@ function Get-PasswordFromFile {
         return (Get-Content -Path $PasswordFile | ConvertTo-SecureString)
     }
 
-    Write-Error "Password file is empty"
+    Write-Host "Password file is empty"
     return $null
 }
 
@@ -69,15 +69,21 @@ function Protect-Vault {
     Write-Host "$Vault has been encrypted to $outputArchive"
 }
 
-if (-Not (Test-Path -Type Container $Vault)) {
-    Write-Error "$Vault does not exist"
-    Exit 1
+function Run-Protect {
+    if (-Not (Test-Path -Type Container $Vault)) {
+        Write-Error "$Vault directory does not exist"
+        Exit 1
+    }
+
+    $securePassword = Get-PasswordFromFile
+    if ($null -eq $securePassword) {
+        $securePassword = Read-PasswordFromInput
+    }
+
+    Protect-Vault -Password $securePassword
+
+    Write-Host "Removing unencrypted $Vault directory"
+    Remove-Item -Recurse -Force $Vault
 }
 
-$securePassword = Get-PasswordFromFile
-if ($null -eq $securePassword) {
-    $securePassword = Read-PasswordFromInput
-}
-
-Protect-Vault -Password $securePassword
-Remove-Item -Recurse -Force $Vault
+Run-Protect
