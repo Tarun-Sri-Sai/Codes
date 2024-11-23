@@ -1,0 +1,22 @@
+# single file makefile
+FILNM=main
+EXT=c
+INTEXT=o
+TAREXT=exe
+
+INTFLAG=-c
+CC=gcc
+CFLAGS=-Wall -Wextra -Wpedantic
+RM=del
+RMFLAGS=/F /Q
+
+all: ${FILNM}
+
+${FILNM}.${TAREXT}: ${FILNM}.${INTEXT}
+	${CC} $^ -o $@
+
+${FILNM}.${INTEXT}: ${FILNM}.${EXT}
+	${CC} ${CFLAGS} ${INTFLAG} $^ -o $@
+
+clean:
+	${RM} ${RMFLAGS} *.${INTEXT} *.${TAREXT}
