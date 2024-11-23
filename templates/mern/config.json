@@ -8,7 +8,7 @@
     ],
     "files": {
       "/.gitgnore": "node_modules\n",
-      "/index.js": "console.log(\\\"MERN Config\\\")\n"
+      "/index.js": "console.log(\"MERN Config\")\n"
     }
   },
   "frontend": {
@@ -21,10 +21,10 @@
     ],
     "files": {
       "/.gitignore": "node_modules\ndist\ndist-ssr\n*.local\n",
-      "/package.json": "{\n  \\\"scripts\\\": {\n    \\\"dev\\\": \\\"npx vite\\\",\n    \\\"build\\\": \\\"npx vite build\\\",\n    \\\"lint\\\": \\\"eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0\\\",\n    \\\"preview\\\": \\\"npx vite preview\\\"\n  },\n}\n",
+      "/package.json": "{\n  \"scripts\": {\n    \"dev\": \"npx vite\",\n    \"build\": \"npx vite build\",\n    \"lint\": \"eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0\",\n    \"preview\": \"npx vite preview\"\n  },\n}\n",
       "/postcss.config.js": "export default {\n  plugins: {\n    tailwindcss: {},\n    autoprefixer: {},\n  },\n};\n",
-      "/tailwind.config.js": "/** @type {import('tailwindcss').Config} */\nexport default {\n  content: [\\\"./index.html\\\", \\\"./src/**/*.{js,ts,jsx,tsx}\\\"],\n  theme: {\n    extend: {},\n  },\n  plugins: [],\n};\n",
-      "/index.html": "<!DOCTYPE html>\n<html lang=\\\"en\\\">\n  <head>\n    <meta charset=\\\"UTF-8\\\" />\n    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\" />\n    <title>MERN Config</title>\n  </head>\n  <body>\n    <div id=\\\"root\\\"></div>\n    <script type=\\\"module\\\" src=\\\"/src/main.jsx\\\"></script>\n  </body>\n</html>\n",
+      "/tailwind.config.js": "/** @type {import('tailwindcss').Config} */\nexport default {\n  content: [\"./index.html\", \"./src/**/*.{js,ts,jsx,tsx}\"],\n  theme: {\n    extend: {},\n  },\n  plugins: [],\n};\n",
+      "/index.html": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>MERN Config</title>\n  </head>\n  <body>\n    <div id=\"root\"></div>\n    <script type=\"module\" src=\"/src/main.jsx\"></script>\n  </body>\n</html>\n",
       "/src/index.css": "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n:root {\n  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;\n  line-height: 1.5;\n  font-weight: 400;\n\n  color-scheme: light dark;\n  color: rgba(255, 255, 255, 0.87);\n  background-color: #242424;\n\n  font-synthesis: none;\n  text-rendering: optimizeLegibility;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n",
       "/src/App.jsx": "function App() {\n  return <></>;\n}\n\nexport default App;\n"
     },
