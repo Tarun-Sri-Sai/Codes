@@ -10,7 +10,7 @@ if ($statusLines.Length -eq 0) {
 }
 
 # Extract file names with their status
-$fileStatuses = [System.Collections.Generic.List[string]]::new()
+$fileStatuses = @()
 $statusLines | ForEach-Object {
     # Extract status and file path
     $status = $_.Substring(0, 2).Trim()
@@ -24,9 +24,9 @@ $statusLines | ForEach-Object {
 
     # Add status and file name to the list
     if ($fileName.Length -gt 0) {
-        $fileStatuses.Add("$status $fileName")
+        $fileStatuses += "$status $fileName"
     } else {
-        $fileStatuses.Add("$status $filePath")
+        $fileStatuses += "$status $filePath"
     }
 }
 
