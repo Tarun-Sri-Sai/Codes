@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../dynstr/dynstr.h"
+#include "../include/dynstr.h"
 
 #define STRING_EQUAL 0
 

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "linked_list.h"
+#include "../include/linked_list.h"
 
 #define DEREF 0
 #define MAX_STRING 0xFFFF

@@ -4,13 +4,13 @@ CPPFLAGS=-Wall -Wextra -Wpedantic -Werror
 
 all: bin/linked_list_test.exe
 
-bin/linked_list_test.exe: obj/linked_list_test.o obj/linked_list.o obj/list_node.o
+bin/linked_list_test.exe: obj/main.o obj/linked_list.o obj/list_node.o
 	${CC} $^ -o $@
 
-obj/%.o: ../linked_list/%.c
+obj/%.o: src/%.c
 	${CC} ${CPPFLAGS} -c $^ -o $@
 
-obj/%.o: %.c
+obj/%.o: test/%.c
 	${CC} ${CPPFLAGS} -c $^ -o $@
 
 clean:

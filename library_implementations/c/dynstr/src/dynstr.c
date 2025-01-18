@@ -1,4 +1,4 @@
-#include "dynstr.h"
+#include "../include/dynstr.h"
 
 String *init(char *val)
 {
