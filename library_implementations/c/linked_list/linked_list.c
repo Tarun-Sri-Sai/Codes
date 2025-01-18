@@ -123,7 +123,7 @@ char *list_debug_print(linked_list *list)
     return debug_string;
 }
 
-static void trim_string(char **string_ptr)
+void trim_string(char **string_ptr)
 {
     size_t length = strnlen_s(string_ptr[DEREF], MAX_STRING);
 

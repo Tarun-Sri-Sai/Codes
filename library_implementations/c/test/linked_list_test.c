@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../c/linked_list/linked_list.h"
+#include "../linked_list/linked_list.h"
 
 int main()
 {
