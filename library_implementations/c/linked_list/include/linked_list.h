@@ -16,6 +16,6 @@ void list_pop_back(linked_list *list);
 void list_pop_front(linked_list *list);
 void delete_list(linked_list **list_ptr);
 char *list_debug_print(linked_list *list);
-static void trim_string(char **string_ptr);
+void trim_string(char **string_ptr);
 
 #endif

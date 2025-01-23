@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "linked_list.h"
+#include "../include/linked_list.h"
 
 #define DEREF 0
 #define MAX_STRING 0xFFFF
@@ -123,7 +123,7 @@ char *list_debug_print(linked_list *list)
     return debug_string;
 }
 
-static void trim_string(char **string_ptr)
+void trim_string(char **string_ptr)
 {
     size_t length = strnlen_s(string_ptr[DEREF], MAX_STRING);
 

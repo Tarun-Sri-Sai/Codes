@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "list_node.h"
+#include "../include/list_node.h"
 
 #define DEREF 0
 
