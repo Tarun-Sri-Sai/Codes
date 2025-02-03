@@ -1,0 +1,110 @@
+{
+  "Java Main Code for Console I/O": {
+    "scope": "java",
+    "prefix": "java_console_main",
+    "body": [
+      "import java.io.*;",
+      "import java.util.*;\n",
+      "public class Main {",
+      "\tprivate static Scanner sc = new Scanner(System.in);",
+      "\tprivate static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out) );\n",
+      "\tpublic static void main(String[] args) throws IOException {",
+      "\t\t$1",
+      "\t\tsc.close();",
+      "\t\tbw.flush();",
+      "\t}",
+      "}"
+    ],
+    "description": "Initialise code for Java console I/O"
+  },
+  "Java Main Code for File I/O": {
+    "scope": "java",
+    "prefix": "java_file_main",
+    "body": [
+      "import java.io.*;",
+      "import java.util.*;\n",
+      "public class Main {",
+      "\tprivate static BufferedReader br = new BufferedReader(new FileReader($1) );",
+      "\tprivate static BufferedWriter bw = new BufferedWriter(new FileWriter($2) );\n",
+      "\tpublic static void main(String[] args) throws IOException {",
+      "\t\t$3",
+      "\t\tbr.close();",
+      "\t\tbw.close();",
+      "\t}",
+      "}"
+    ],
+    "description": "Initialise code for Java file I/O"
+  },
+  "C++ Main Code for Console I/O": {
+    "scope": "cpp",
+    "prefix": "cpp_console_main",
+    "body": [
+      "#include <bits/stdc++.h>",
+      "using namespace std;\n",
+      "int main(void) {",
+      "\tios::sync_with_stdio(false);",
+      "\tcin.tie(NULL);",
+      "\t$1",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "Initialise code for C++ console I/O"
+  },
+  "C++ Main Code for File I/O": {
+    "scope": "cpp",
+    "prefix": "cpp_file_main",
+    "body": [
+      "#include <bits/stdc++.h>",
+      "using namespace std;\n",
+      "int main(void) {",
+      "\tifstream fin ($1);",
+      "\tofstream fout ($2);",
+      "\t$3",
+      "\tfin.close();",
+      "\tfout.close();",
+      "\treturn 0;",
+      "}"
+    ]
+  },
+  "C Main Code for Console I/O": {
+    "scope": "c",
+    "prefix": "c_console_main",
+    "body": [
+      "#include <stdio.h>",
+      "#include <stdlib.h>",
+      "#include <time.h>",
+      "#include <string.h>",
+      "#include <math.h>\n",
+      "int main(void) {",
+      "\t$1",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "Initialise code for C console I/O"
+  },
+  "Python Main Code for Console I/O": {
+    "scope": "python",
+    "prefix": "python_console_main",
+    "body": [
+      "def main():",
+      "\t$1\n\n",
+      "if __name__ == '__main__':",
+      "\tmain()\n"
+    ]
+  },
+  "Prompt for ChatGPT to get material": {
+    "prefix": "material_prompt",
+    "body": ["Prepare detailed notes in Markdown for $1"]
+  },
+
+  "Current Date": {
+    "prefix": "date_now",
+    "body": ["$CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE"]
+  },
+  "Current Time": {
+    "prefix": "time_now",
+    "body": [
+      "$CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND"
+    ]
+  }
+}
